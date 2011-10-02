@@ -1,0 +1,1593 @@
+;; ########################################################################
+;; ------------------------------------------------------------------------
+;;
+;; dot.emacs for GNU Emacs
+;;
+;; Andreas Wilm <andreas DOT wilm AT gmail DOT com>
+;;
+;; last change: 2010-11-20
+;;
+;; ########################################################################
+;; ------------------------------------------------------------------------
+;;
+;;
+;; LINKS
+;; -----------------------------------
+;;
+;; Emacs Wiki
+;;  http://www.emacswiki.org/
+;; GNU Emacs Manual
+;;  http://www.gnu.org/software/emacs/manual/
+;; Programming in Emacs Lisp
+;;  http://www.gnu.org/manual/emacs-lisp-intro/emacs-lisp-intro.html
+;; GNU Emacs FAQ
+;;  http://www.faqs.org/faqs/GNU-Emacs-FAQ/
+;;
+;;
+;;
+;; MEMO:
+;; -----
+;;
+;; My Keybindings:
+;; ---------------
+;;
+;;   next-buffer                  M right
+;;   previous-buffer              M left
+;;   comment-out-region           C-c C-q
+;;   increase-font-size           C-x C-+
+;;   decrease-font-size           C-x C--
+;;
+;;
+;; Defaults:
+;; ---------
+;;   undo                           C-/ or C-_
+;;   undo all unsaved changes       M-x revert-buffer
+;;   mark-whole-buffer		        C-x h
+;;   
+;;   kill line forward              C-k
+;;   kill line backword             M-0 C-k
+;;   kill sentence forward          M-k
+;;   kill sexp forward              C-M-k
+;;   word forward-/backward         M-f/-b
+;;   kill-word                      M-d / C-del
+;;                                 
+;;   search again                   C-s C-s
+;;   isearch-backward-regexp        C-M-r
+;;   isearch-forward-regexp         C-M-s
+;;   query-replace                  M-r (M-%)
+;;   query-replace-regexp           C-M-%
+;;   goto-line                      M-g g 
+;;   beginning-of-buffer            M-<
+;;   find-tag                       M-.
+;;   see also complete-tag: find . -type f -iname "*.[ch]" | xargs etags
+;;   complete-symbol                M-TAB (Esc-TAB)
+;;   upcase-word                    M-u
+;;   downcase-word                  M-l
+;;                                 
+;;   fill-paragraph                 M-q
+;;   indent the region one space    C-x C-i
+;;   see also indent-region         C-M 
+;;   center-paragraph               M-o M-S
+;;   center-line                    M-o M-s
+;;                                 
+;;   point-to-register              C-x r SPC
+;;   jump-to-register               C-x r j
+;;   
+;;   insert result of shell-command
+;;   into buffer                    C-u M-!
+;;   replace current region with
+;;   shell command  output which
+;;   gets region passed as input    C-u M-|
+;;   see also pipe-through-shell-command
+;;   
+;;   C-u (universal argument) passes an argument to the subsequent
+;;   command.  E.g. to indent a region of plain text by 6 spaces, mark
+;;   the region, and then type C-u 6 M-C-\.
+;;   
+;;   yank earlier kills:            C-u DIGIT C-y
+;;   
+;;   Auctex:
+;;     insert environment             C-c C-e
+;;     insert-macro                   C-c C-m or C-c RET
+;;     run latex                      C-c C-c
+;;     run latex on part              C-c C-r
+;;     complex tex symbol             M-<TAB>
+;;     start viewer                   C-c C-v                             
+;;     run lacheck                    C-c C-c Check
+;;     query for name of master file  TeX-master-file-ask
+;;     close environment              C-c ]
+;;   
+;;   dabbrev-expand:                C-M-\
+;;   
+;;   macros: 
+;;     C-x ( - start defining a keyboard macro
+;;     C-x ) - stop defining the keyboard macro
+;;     C-x e - execute the keyboard macro
+;;
+;;
+;;
+;; Useful Commands/Libraries I should use more often
+;; -------------------------------------------------
+;;
+;;   yasnippet
+;;   auto-complete
+;;    
+;;   highlight-changes
+;;   goto-last-change
+;;   flyspell
+;;   compile
+;;   ngrep
+;;   gdb-many-windows
+;;   pop-to-mark-command (instead of using registers)
+;;    
+;;   occur: hide all lines matching regexp
+;;          editable version missing (thought that was called all)
+;;    
+;;   delete-matching-lines (alias for flush-lines)
+;;   delete-non-matching lines (alias for keep-lines)
+;;
+;;   regexp:
+;;     highlight-regexp
+;;     re-builder
+;;     align-regexp
+;;     complex example which replaces all xyz_infile with pcXyzInfile
+;;       replace-regexp  \([a-z]\)\([A-Za-z0-9]+\)_outfile  pc\,(upcase \1)\2Outfile
+;;    
+;;   rectangle:
+;;     insert text: mark, then string-rectangle
+;;     delete text: mark, then kill-rectangle
+;;    
+;;
+;; Emacs-Self-Doku:
+;; ----------------
+;;   describe-*
+;;   C-h a -- look for commands (only finds interactive commands, see
+;;            CommandsDefined)
+;;   C-h k -- followed by a key will tell you precisely what that key
+;;             accomplishes, in the current context
+;;   C-h F -- brings up the Emacs FAQ, search using i and s (see also the
+;;            online version: OnlineResources)
+;;   C-h p -- check wether there is an appropriate package to load
+;;   C-h m -- mode help
+;;   apropos-documentation -- search doc strings of functions and
+;;                            variables
+;;   apropos -- searches all function and variables
+;;
+;;
+;; ------------------------------------------------------------------------
+;; ########################################################################
+
+
+
+
+;; Startup
+;; -------
+;;
+;;
+(setq inhibit-startup-message t)
+;Enter the debugger each time an error is found
+(setq debug-on-error t)
+(when (featurep 'xemacs)
+  (error "Running xemacs, but dot.emacs was made for GNU Emacs."))
+(server-start)
+(add-to-list 'load-path "~/.emacs.d/")
+;(add-to-list 'load-path "~/local/share/emacs/site-lisp/")
+
+
+
+
+;; PC-like behaviour
+;; -----------------
+;;
+;;(pc-selection-mode) ;; includes transient-mark-mode and delete-selection-mode
+;; cua-rectangle cursor movements don't work with pc-selection-mode
+;; use: \s-return and then C-n -p -f -b or mouse
+;; redefines M right/left!
+(transient-mark-mode t)
+(delete-selection-mode t)
+(pc-bindings-mode)
+
+
+
+;; Global Key-Bindings
+;; -------------------
+;;
+;; suspend Emacs only when running in terminal
+(if window-system
+  (global-unset-key "\C-z")) ; iconify-or-deiconify-frame (C-x C-z)
+
+(global-set-key [(M right)] 'next-buffer) ;; overwritten by pc-select
+(global-set-key [(M left)] 'previous-buffer) ;; overwritten by pc-select
+
+
+
+;; Font
+;; ----
+;;
+;; See also http://hivelogic.com/articles/top-10-programming-fonts
+;;
+(when (>= emacs-major-version 23)
+  (if (eq window-system 'x)
+      (set-default-font "Inconsolata-11")
+    ;; (set-default-font "Monospace-10"))
+    ))
+
+;; Changing the font size on the fly
+;; http://sachachua.com/wp/2006/09/15/emacs-changing-the-font-size-on-the-fly/
+;;
+;; See http://emacs-fu.blogspot.com/2008/12/zooming-inout.html for
+;; another approach
+;;
+;; Starting with GnuEmacs 23 you can use C-x C-+ and C-x C-- to
+;; increase or decrease the buffer text size
+;;
+(when (< emacs-major-version 23)
+  (message "increase-font-size")
+  (defun increase-font-size ()
+    (interactive)
+    (set-face-attribute 'default
+			nil
+			:height
+			(ceiling (* 1.10
+				    (face-attribute 'default :height))))) 
+  (message "decrease-font-size")
+  (defun decrease-font-size ()
+    (interactive)
+    (set-face-attribute 'default
+			nil
+			:height
+			(floor (* 0.9
+				  (face-attribute 'default :height)))))
+  (global-set-key (kbd "C-x C-+") 'increase-font-size)
+  (global-set-key (kbd "C-x C--") 'decrease-font-size))
+
+
+
+;; missing-packages-list
+;; ---------------------
+;;
+;; from http://www.mygooglest.com/fni/dot-emacs.html
+;;
+(defvar missing-packages-list nil
+  "List of packages that `try-require' can't find.")
+;; attempt to load a feature/library, failing silently
+(message "Defining try-require")
+(defun try-require (feature)
+  "Attempt to load a library or module. Return true if the
+library given as argument is successfully loaded. If not, instead
+of an error, just add the package to a list of missing packages."
+  (condition-case err
+      ;; protected form
+      (progn
+        (message "Checking for library `%s'..." feature)
+        (if (stringp feature)
+            (load-library feature)
+          (require feature))
+        (message "Checking for library `%s'... Found" feature))
+    ;; error handler
+    (file-error  ; condition
+     (progn
+       (message "Checking for library `%s'... Missing" feature)
+       (add-to-list 'missing-packages-list feature 'append))
+     nil)))
+
+
+
+;; dos2unix / unix2dos
+;; -------------------
+;;
+;; Taken from http://www.jm3.net/code/lisp/dot-emacs
+;; convert yucky newlines
+;; 
+(message "Defining dos2unix")
+(defun dos2unix ()
+  "Convert yucky newlines"
+  (interactive)
+  (goto-char (point-min))
+  (while (search-forward "\r" nil t) (replace-match "")))
+
+;; Taken from http://www.ludd.ltu.se/~wilper-8/computer/emacs
+;; 
+(message "Defining unix2dos")
+(defun unix2dos ()
+	(interactive)
+	(goto-char (point-min))
+	(while (search-forward "\n" nil t) (replace-match "\r\n")))
+
+
+
+;; ascii-table
+;; -----------
+;;
+;; Taken from http://puggy.symonds.net/~anoop/configs/dotemacs.html
+;; Print the ASCII table.
+;;
+(message "Defining ascii-table")
+(defun ascii-table ()
+  "Print the ascii table."
+  (interactive)
+  (switch-to-buffer "*ASCII*")
+  (erase-buffer)
+  (insert (format "ASCII characters up to number %d.\n" 254))
+  (insert (format "Dec Hex Char\n"))
+  (let ((i 0))
+    (while (< i 254)
+      (setq i (+ i 1))
+      (insert (format "%4d %c %x\n" i i i))))
+  (beginning-of-buffer))
+
+
+
+;; numerate-lines
+;; --------------
+;;
+(message "Defining numerate-lines")
+(defun numerate-lines ()
+  "Insert line numbers into buffer"
+  (interactive)
+  (save-excursion
+    (let ((max (1+ (count-lines (point-min)(point-max))))
+          (line 1))
+      (goto-char (point-min))
+      (while (< line max)
+        (setq fmtstr (concat "%" (number-to-string
+                                  (length (number-to-string max))) "d "))    
+        (insert (format fmtstr line))
+        (beginning-of-line 2)
+        (setq line (+ line 1))))))
+
+
+
+;; pipe through shell-command
+;; --------------------------
+;;
+;; pipe region through shell-command and replace region with result
+;;
+;; if you just want to run a shell-command on a region with the result
+;;begin printed to a temp buffer, use shell-command-on-region
+;;
+;; original taken from
+;; http://www.rus.uni-stuttgart.de/42/themen/texte-bilder/editors/gnuemacs/model-emacs.html
+;;
+(message "Defining pipe-though-shell-command")
+(defun pipe-through-shell-command ()
+  "Pipe region through shell-command and replace region with result"
+  (interactive)
+  ;;(mark-whole-buffer)
+  (shell-command-on-region
+   ;(point-min) (point-max)
+   (mark) (point)
+   (read-string "shell-command: ") t))
+
+
+;; insert-date / insert-iso-date
+;; -----------------------------
+;;
+;; see also yasnippet time
+;;
+(message "Defining insert-date")
+(defun insert-date ()
+  "Insert the current date."
+  (interactive)
+  (insert (format-time-string "%c" (current-time))))
+(defun insert-date-time ()
+  "Insert the current date and time."
+  (interactive)
+  (insert (format-time-string "%Y%m%d %H%M" (current-time))))
+(defun insert-iso-date ()
+  "Display the current date and time."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d" (current-time))))
+
+
+
+;; auto-load-tags
+;; --------------
+;;
+;; auto load TAGS file if existant
+;; Add to your mode hooks
+;; build using eg: find . -type f -iname "*.[ch]" | xargs etags
+;;
+(message "Defining auto-load-tags-file")
+(defun auto-load-tags-file ()
+  "Automatically loads TAGS file if existant."
+  (interactive)
+  (let ((tag-file (concat default-directory "TAGS")))
+    (if (file-exists-p tag-file)
+        (visit-tags-table tag-file)
+      (message "No tag-file found"))))
+
+
+
+;; color-theme
+;; -----------
+;;
+;; http://www.emacswiki.org/elisp/color-theme.el.gz
+;;
+;; color-theme-clarity
+;; color-theme-tty-dark
+;; color-theme-midnight
+;;
+(if window-system
+    (when (try-require 'color-theme)
+      (message "Setting up color-theme")
+      ;(color-theme-initialize)
+      ;(color-theme-clarity)))
+      ))
+
+
+
+;; ido
+;; ---
+;;
+;; http://www.emacswiki.org/cgi-bin/wiki/InteractivelyDoThings
+;; see also
+;; http://emacs-fu.blogspot.com/2009/02/switching-buffers.html
+;;
+;; NOTES:
+;; Open file (C-x C-f):
+;;    C-j to create a new file named with the text you entered
+;; Recently visited directories:
+;;    M-p and M-n for previous/next
+;;    M-s to search
+;;
+(when (try-require 'ido)
+	  (ido-mode 'both); for buffers and files
+	  ;;(setq ido-enable-flex-matching); enable fuzzy matching
+	  (setq ido-max-prospects 8); don't spam my minibuffer
+	  (setq ido-confirm-unique-completion t); wait for RET, even with unique completion
+	  ;; confirmation is rather annoying
+	  (setq confirm-nonexistent-file-or-buffer nil))
+
+
+
+;; gnupg support
+;; -------------
+;;
+;; use epa-file or mailcrypt & mc-gpg-file-mode
+;;
+;; http://www.emacswiki.org/elisp/mc-gpg-file-mode.el
+;; http://mailcrypt.sourceforge.net/
+;;
+(if (try-require 'epa-file)
+	(progn
+	  (epa-file-enable))
+ (progn
+	(message "Warning: epa-file not found. Will try mailcrypt instead")
+	; FIXME only works with armored files, whereas epa-file does not
+	;  output armored files by default
+	;  Use (epa-armor t) on a per file basis?
+	(when (try-require 'mailcrypt)
+		  (mc-setversion "gpg")
+		  (setq mc-passwd-timeout 3600)
+		  (when (try-require 'mc-gpg-file-mode)
+			  (setq mc-gpg-user-id "andreas.wilm@gmail.com"))
+	  )))
+
+
+
+;; rst.el: restructured text
+;; -------------------------
+;;
+(try-require 'rst)
+
+
+;; all.el: edit all lines matching regexp
+;; --------------------------------------
+;; http://groups.google.de/group/comp.emacs/browse_thread/thread/93d284d480e2dfd7/cf4461d655938527?q=occur+read+write&rnum=1&hl=de#cf4461d655938527
+;;
+(try-require 'all)
+
+
+;; hide-region
+;; -----------
+;;
+(try-require 'hide-region)
+
+
+;; paren: parenthesis matching
+;; ---------------------------
+;;
+(when (try-require 'paren)
+    (progn
+      (show-paren-mode t)
+      (setq show-paren-delay 0)))
+;;(setq blink-matching-paren-distance nil) ; Blinking parenthesis
+;; (setq show-paren-style 'expression) ; Highlight text between parens
+
+
+;; htmlize
+;; -------
+;; http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el
+;;
+(try-require 'htmlize)
+
+
+;; goto-last-change
+;; ----------------
+;;
+(try-require 'goto-last-change)
+
+
+;; Uniquify: show path info in buffers with otherwise identical filenames
+;; ----------------------------------------------------------------------
+(when (try-require 'uniquify)
+    (progn
+      (setq uniquify-buffer-name-style 'post-forward)))
+
+
+;; comment
+;; -------
+;;
+;; old: (autoload 'comment-out-region "comment" nil t)
+;;      (global-set-key "\C-c\C-q" 'comment-out-region)
+;;
+;; part of package newcomment, which is part of emacs
+;; make sure it's loaded anyway; experienced some trouble with latex otherwise
+(when (try-require 'newcomment)
+      (global-set-key "\C-c\C-q" 'comment-region))
+
+
+
+;; recentf: recent file menu
+;; -------------------------
+;;
+;; part of 21, but creates new menu called "files" instead of integrating into files...
+;; http://www.djefer.com/info/emacs/recentf.el
+;;
+(when (try-require 'recentf)
+    (progn
+      (setq recentf-menu-path '("File"))
+      ;; when using trampmode with recentf.el, it's advisable to turn
+      ;; off the cleanup feature of recentf
+      ;; http://stackoverflow.com/questions/880625/stop-tramp-mode-running-on-emacs-startup
+      (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
+      (recentf-mode t)))
+
+
+;; autoinsert: for inserting templates
+;; -----------------------------------
+;;
+(when (try-require 'autoinsert)
+    (progn
+      (auto-insert-mode) ;; Adds hook to find-files-hook
+      (setq auto-insert-directory "~/local/src/emacs-templ/") ;; trailing slash important
+      (setq auto-insert-query t) ;; prompt before insertion
+      (define-auto-insert "\\.tcl\\'" "tcl-template.tcl")
+      (define-auto-insert "\\.sh\\'" "bash-template.sh")
+      (define-auto-insert "\\.css\\'" "css-template.css")
+      (define-auto-insert "\\.c\\'" "c-template.c")
+      (define-auto-insert "\\.py\\'" "python-template.py")
+      (define-auto-insert "\\.html\\'" "html-template.html")
+      (add-hook 'find-file-hooks 'auto-insert)))
+     
+
+
+;; tex-site
+;; ---------------
+;;
+(when (try-require 'tex-site)
+    (progn
+  	(setq TeX-quote-after-quote t)    
+    (local-set-key "\C-c\C-q" 'TeX-comment-or-uncomment-region);; comment-region makes trouble
+	;;(TeX-run-style-hooks "german")
+	))
+
+
+;; php
+;; ---
+;;
+;; NOTE: Not used in a looooong time
+;;
+;; (if (require 'php-mode nil t) fails with emacs 23
+;; with the error message error: `c-lang-defconst' must be used in a file
+;; see http://stackoverflow.com/questions/898063/making-php-mode-compatible-with-emacs-23
+;; the following should work, but breaks mmm-mode
+;;(autoload 'php-mode "php-mode" "Major mode for editing php code." t)
+;;(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
+;; so wait until fixed
+;;
+;(if (require 'php-mode nil t)
+(if nil
+    (progn
+      (message "Setting up php-mode")
+
+      ;; see http://www.emacswiki.org/cgi-bin/wiki/HtmlModeDeluxe
+      (add-hook 'php-mode-user-hook 'turn-on-font-lock)
+      
+      (if (require 'mmm-mode nil t)
+          (progn
+            (setq mmm-global-mode 'maybe)
+            ;;
+            ;; set up an mmm group for fancy html editing
+            (mmm-add-group
+             'fancy-html
+             '(
+               (html-php-tagged
+                :submode php-mode
+                :face mmm-code-submode-face
+                ;;:front "<[?]php"
+                :front "<[?]"
+                :back "[?]>")
+               (html-css-attribute
+                :submode css-mode
+                :face mmm-declaration-submode-face
+                :front "style=\""
+                :back "\"")))
+            ;;
+            ;; What files to invoke the new html-mode for?
+            (add-to-list 'auto-mode-alist '("\\.inc\\'" . html-mode))
+            (add-to-list 'auto-mode-alist '("\\.phtml\\'" . html-mode))
+            (add-to-list 'auto-mode-alist '("\\.php[0-9]?\\'" . html-mode))
+            (add-to-list 'auto-mode-alist '("\\.[sj]?html?\\'" . html-mode))
+            (add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
+            ;;
+            ;; What features should be turned on in this html-mode?
+            (add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil html-js))
+            (add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil embedded-css))
+            (add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil fancy-html))
+            ;;
+            ;; Not exactly related to editing HTML: enable editing help with mouse-3 in all sgml files
+            (defun go-bind-markup-menu-to-mouse3 ()
+              (define-key sgml-mode-map [(down-mouse-3)] 'sgml-tags-menu))
+            ;;
+            (add-hook 'sgml-mode-hook 'go-bind-markup-menu-to-mouse3)
+            (if window-system
+                (message "FIXME: mmm-default-submode-face unchanged") 
+              (set-variable 'mmm-submode-decoration-level 0)
+              ))
+	(message "WARNING: mmm-mode not available")))
+	(message "WARNING: php-mode not available"))
+
+
+
+;; css-mode
+;; --------
+;;
+;; http://www.emacswiki.org/elisp/css-mode.el
+;;
+(autoload 'css-mode "css-mode"
+  "Mode for editing CSS files" t)
+(add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
+;;(setq cssm-indent-function #'cssm-c-style-indenter)
+;;(setq cssm-indent-level '2)
+
+
+
+;; yasnippet
+;; --------
+;;
+(add-to-list 'load-path "~/.emacs.d/yasnippet-0.6.1c/")
+(when (try-require 'yasnippet) ;; not yasnippet-bundle
+    (progn
+      (yas/initialize)
+      (yas/load-directory "~/.emacs.d/yasnippet-0.6.1c/snippets")
+      ;(setq yas/trigger-key (kbd "C-c <kp-multiply>"))
+      ))
+
+
+
+;; pycomplete: python completion
+;; -----------------------------
+;;
+;; http://www.rwdev.eu/articles/emacspyeng
+;; debian version of this only support M-C-i expansion (no help etc)
+;;
+;; 
+;;(if (require 'pycomplete nil t)
+(when (try-require 'pycomplete)
+    (progn
+      (setq auto-mode-alist (cons '("\\.py$" . python-mode)
+				  auto-mode-alist))
+      (autoload 'python-mode "python-mode" "Python editing mode." t)
+      (autoload 'pymacs-load "pymacs" nil t)
+      (autoload 'pymacs-eval "pymacs" nil t)
+      (autoload 'pymacs-apply "pymacs")
+      (autoload 'pymacs-call "pymacs")
+      ; ideally \t only when at end of line with some stuff before it, but can only do this with wrapper
+      ; like  (if (looking-at "$")
+      (define-key py-mode-map (kbd "C-<tab>") 'py-complete)
+      ))
+(setq interpreter-mode-alist(cons '("python" . python-mode)
+                                  interpreter-mode-alist))
+
+
+
+
+;; -----------------------------------------------------------------------
+;; ###   Mode-Hooks
+;; ###
+
+
+
+;; ---   C
+;;
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (message "Setting up my C hooks")
+            ;(setq c-basic-offset 4)
+            ;(setq tab-width 4)
+            ;(setq c-default-style "K&R") ; gnu k&r bsd stroustrup linux
+            ;                            ; python java
+            ;(auto-fill-mode t)
+            (setq c-default-style "python") ; gnu k&r bsd stroustrup linux
+            ;(local-set-key [return] 'newline-and-indent)
+            ;(hs-minor-mode t)
+            ;(local-set-key "\C-c\C-q" 'comment-region) ;; c indent-region
+            (auto-load-tags-file)
+            ;(auto-complete-mode t)
+            ))
+
+
+;; ---   Python
+;;
+;; might interfere with pycomplete
+;;
+(add-hook 'python-mode-hook
+          (lambda ()
+            (message "Setting up my Python hooks")
+            (auto-load-tags-file)
+            ;(auto-complete-mode t)
+            ))
+
+
+;; ---   Tcl
+;;
+(add-hook 'tcl-mode-hook
+          (lambda ()
+            (message "Setting up my Tcl hooks")
+            (tcl-auto-fill-mode t)
+            ;(local-set-key [return] 'newline-and-indent)
+
+            ;; -- Tcl-Font
+            ;; see http://www.cs.man.ac.uk/%7Efellowsd/tcl/#fontlock
+            ;; slightly modified by me: original does not go well with dark
+            ;; backgrounds
+            (try-require 'tcl-font nil t)
+            ;(hs-minor-mode t)
+            ;;(auto-load-tags-file)
+            ;; FIXME activated by auto-load-tags-file: why
+            ;;(setq show-trailing-whitespace nil);;
+            ;; FIXME activated by text-mode: why
+            ;;(auto-fill-mode -1)
+            ))
+
+
+
+;; ---   LaTeX & TeX
+;;
+(add-hook 'latex-mode-hook
+          (lambda ()
+            (message "Setting up my LaTeX hooks")
+            ;;(setq tab-width 4)
+            (auto-fill-mode t)
+            (local-set-key [return] 'newline-and-indent)
+            ;;(local-set-key "\C-c\C-q" 'TeX-comment-or-uncomment-region)
+            (setq TeX-auto-save t)
+            (setq TeX-parse-self t)
+            (setq-default TeX-master nil)
+            (setq TeX-auto-untabify t)
+            ;(auto-complete-mode t)
+            ;; http://staff.science.uva.nl/~dominik/Tools/reftex/reftex.html
+			(when (try-require 'reftex)
+              (reftex-mode t)
+              (setq reftex-plug-into-AUCTeX t)
+              (setq reftex-use-external-file-finders t))
+            (flyspell-mode t)
+            (local-set-key "\C-c\C-q" 'comment-region)
+            ;;(TeX-run-style-hooks "german")
+            ))
+(add-hook 'TeX-language-ngerman-hook
+     	  (lambda () (ispell-change-dictionary "german")))
+(add-hook 'TeX-language-german-hook
+     	  (lambda () (ispell-change-dictionary "ngerman")))
+(add-hook 'tex-mode-hook
+          (lambda ()
+            (message "just a test: tex-mode-hook..only called when auctex is missing?")
+            ))
+(add-hook 'latex-mode-hook
+          (lambda ()
+            (message "just a test: emacs latex-mode-hook..only called when auctex is missing?")
+            ))
+
+
+
+;; ---   BibTeX
+;;
+(add-hook 'bibtex-mode-hook
+          (lambda ()
+            (message "Setting up my bibtex hooks")
+            (auto-fill-mode nil)
+            (local-set-key [return] 'newline-and-indent)
+            ;; tab normally set to bibtex-find-text. don't use this,
+            ;; but need tab for yasnippet
+            ;; FIXME: doesnt work
+            (local-set-key [tab] 'yas/expand)
+            ))
+
+
+
+;; ---   Shell
+;;
+(add-hook 'sh-mode-hook
+          (lambda ()
+            (message "Setting up my sh hooks")
+            ;;(setq tab-width 4)
+            (local-set-key [return] 'newline-and-indent)
+            ;;(auto-fill-mode t)
+            ;;(auto-load-tags-file)
+            ))
+
+
+;; ---   Html
+;;
+;; xml-lite: http://www.dogbiscuit.org/mdub/software/xml-lite.el
+;; FIXME: isn't nxml much nicer
+;;
+(add-hook 'html-mode-hook
+          (lambda ()
+            (message "Setting up my html hooks")
+            (if (try-require 'xml-lite nil t)
+                (progn
+                  (xml-lite-mode t)
+                  (setq xml-lite-indent-offset 2))
+              (message "Not activating xml-lite-mode (emacs-version<21)"))
+
+            ;; FIXME why is text mode activated again at this point?
+            (local-set-key [tab] 'indent-for-tab-command)
+            ;;(setq tab-width 2)
+            (local-set-key [return] 'newline-and-indent)
+            (setq show-trailing-whitespace t)
+            (flyspell-mode t)
+            ))
+
+
+;; ---   Text
+;;
+(add-hook 'text-mode-hook
+          (lambda ()
+            (message "Setting up my text hooks")
+            (setq tab-width 4)
+            (auto-fill-mode t)
+            (setq show-trailing-whitespace t)
+            (flyspell-mode t)
+            ))
+            
+            
+;; ---   Perl
+;;
+(add-hook 'perl-mode-hook
+          (lambda ()
+            (message "Setting up my perl hooks")
+            ;;(setq tab-width 4)
+            ;;(auto-fill-mode t)
+            (local-set-key [return] 'newline-and-indent)
+            ;;(auto-load-tags-file)
+            ;(hs-minor-mode t)
+            ))
+
+	
+
+;; ---   Modes Appends
+;;
+;;(setq auto-mode-alist
+;;   (append
+;;       (list '("\\.rvt$" . html-mode)) auto-mode-alist))
+;;(add-to-list 'auto-mode-alist '("\\.css$" . html-mode))
+;;(setq auto-mode-alist
+;;      (cons '("\\.\\(xml\\|xsl\\)\\'" . xml-lite-mode)
+;;            auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.wml$" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.xhtml$" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
+
+
+
+
+
+
+; =================================================================
+
+
+;; ---  mark the word FIXME
+;;
+;; anyway to do this automatically for all modes?
+;;
+(font-lock-add-keywords 'tcl-mode '(("\\(FIXME\\)"
+                                     1 font-lock-warning-face t)))
+(font-lock-add-keywords 'c-mode '(("\\(FIXME\\)"
+                                   1 font-lock-warning-face t)))
+(font-lock-add-keywords 'emacs-lisp-mode '(("\\(FIXME\\)"
+                                            1 font-lock-warning-face t)))
+(font-lock-add-keywords 'LaTeX-mode '(("\\(FIXME\\)"
+                                       1 font-lock-warning-face t)))
+(font-lock-add-keywords 'bibtex-mode '(("\\(FIXME\\)"
+                                        1 font-lock-warning-face t)))
+(font-lock-add-keywords 'sh-mode '(("\\(FIXME\\)"
+                                    1 font-lock-warning-face t)))
+(font-lock-add-keywords 'html-mode '(("\\(FIXME\\)"
+                                      1 font-lock-warning-face t)))
+(font-lock-add-keywords 'text-mode '(("\\(FIXME\\)"
+                                      1 font-lock-warning-face t)))
+(font-lock-add-keywords 'perl-mode '(("\\(FIXME\\)"
+                                      1 font-lock-warning-face t)))
+(font-lock-add-keywords 'python-mode '(("\\(FIXME\\)"
+                                      1 font-lock-warning-face t)))
+
+
+
+
+;; ------------------------------------------------------------------------
+;; ###   Skeleton   #######################################################
+;; ###
+;; ###  FIXME convert these to yasnippet snippets
+;;
+;;
+(defvar skeleton-enabled t)
+(when skeleton-enabled
+
+  ;; ---   skel-tcl-proc
+  ;;
+  ;; insert a tcl proc template
+  ;;
+  (define-skeleton skel-tcl-proc
+    "Insert a tcl proc template"
+    ""
+    \n >
+    "# ---   " (setq v1 (skeleton-read "proc name? "))
+    \n >
+    "#"
+    \n >
+    "# <FIXME:shortdescription>"
+    \n >
+    "#"
+    \n >
+    "# IN:"
+    \n >
+    "# OUT:"
+    \n >
+    "# SIDEEFFECTS:"
+    \n >
+    "# NOTES:"
+    \n >
+    "#"
+    \n >
+    "proc " v1 " {} {"
+    \n >
+    "################"
+    \n >
+    _
+    \n >
+    "}"
+    \n >
+    "# " v1
+    \n
+    )
+
+
+  ;; ---   skel-tcl-readfile
+  ;;
+  ;; insert a tcl readfile template
+  ;;
+  (define-skeleton skel-tcl-readfile
+    "Insert a tcl proc template"
+    ""
+    \n >
+    "set fid [open $faddress r]"
+    \n >
+    "while {[gets $fid line]!=-1} {"
+    \n >
+    "if {![regexp {^ *\#} $line]} {"
+    \n >
+    "puts \"no comment in $line\""
+    \n >
+    "}"
+    \n >
+    "}"
+    \n >
+    "close $fid"
+    \n
+    )
+
+
+  ;; ---   skel-bash-func
+  ;;
+  ;; insert a bash function template
+  ;;
+  (define-skeleton skel-bash-func
+    "Insert a bash function template"
+    ""
+    \n >
+    "###   " (setq v1 (skeleton-read "proc name? "))
+    \n >
+    "#"
+    \n >
+    "# FIXME:description"
+    \n >
+    "#"
+    \n >
+    v1 "()"
+    \n >
+    "{"
+    \n >
+    "if [ -z \"$1\" ]; then"
+    \n >
+    "FIXME:DOSOMETHING"
+    \n >
+    "fi"
+    \n >
+    "}"
+    \n >
+    "# " v1
+    \n
+    )
+
+
+  ;; ---   skel-c-func
+  ;;
+  ;; insert a c function template
+  ;;
+  (define-skeleton skel-c-func
+    "Insert a c function template"
+    ""
+    \n >
+    "/***   " (setq v1 (skeleton-read "proc name? ")) "   ***"
+    \n >
+    "*"
+    \n >
+    "* FIXME:description"
+    \n >
+    "*"
+    \n >
+    "* ARGUMENTS:"
+    \n >
+    "* RETURN:"
+    \n >
+    "* SIDEEFFECTS:"
+    \n >
+    "* NOTES:"
+    \n >
+    "*/"
+    \n >
+    "void"
+    \n >
+    v1 "()"
+    \n >
+    "{"
+    \n >
+    "}"
+    \n >
+    "/***   end: " v1 "   ***/"
+    \n
+    )
+
+
+
+  ;; ---   skel-bibtex-entry
+  ;;
+  ;; insert a bibtex entry template
+  ;;
+  (define-skeleton skel-bibtex-entry
+    "Insert a bibtex entry template"
+    ""
+    \n >
+    "@ARTICLE{,"
+    \n >
+    "author   = \"\","
+    \n >
+    "title    = {{}},"
+    \n >
+    "journal  = {},"
+    \n >
+    "year     = {},"
+    \n >
+    "volume   = {\\PrintVol{}},"
+    \n >
+    "number   = {},"
+    \n >
+    "pages    = {},"
+    \n >
+    "abstract = {},"
+    \n >
+    "URL      = {},"
+    \n >
+    "eprint   = {}"
+    \n >
+    "}"
+    \n
+    )
+
+
+  ;; ---   skel-bibtex-entry
+  ;;
+  ;; insert a bibtex entry template
+  ;;
+  (define-skeleton skel-beamer-frame
+    "Insert a latex-beamer frame template"
+    ""
+    \n >
+    "\\begin{frame}"
+    \n >
+    "\\frametitle{FIXME:title}"
+    \n >
+    "\\end{frame}"
+    \n >
+    "%"
+    \n >
+    "\\mynote{%"
+    \n >
+    "\\begin{minipage}{0.5\\textwidth}"
+    \n >
+    "\\tiny"
+    \n >
+    "% \\begin{itemize}"
+    \n >
+    "%\\setlength{\\itemsep}{1pt}"
+    \n >
+    "% \\item"
+    \n >
+    "% \\end{itemize}"
+    \n >
+    "\\end{minipage}\\hfill%"
+    \n >
+    "\\begin{minipage}{0.5\\textwidth}"
+    \n >
+    "\\tiny"
+    \n >
+    "% \\begin{itemize}"
+    \n >
+    "%\\setlength{\\itemsep}{1pt}"
+    \n >
+    "% \\item"
+    \n >
+    "% \\end{itemize}"
+    \n >
+    "\\textit{Transition:}"
+    \n >
+    "\\end{minipage}"
+    \n >
+    "}"
+    \n
+    )
+)
+
+;; ------------------------------------------------------------------------
+;; ###   Misc   ###########################################################
+;; ###
+
+;; --- Occur and Isearch
+;; Found on
+;; http://emacsblog.org/2007/02/27/quick-tip-add-occur-to-isearch/
+;;
+;;  adds an extra keybinding to interactive search (C-s) that runs
+;;  occur on the current search string/regexp, immediately showing all
+;;  hits in the entire buffer. Example: C-s foo C-o
+;;
+(define-key isearch-mode-map (kbd "C-o")
+  (lambda ()
+    (interactive)
+    (let ((case-fold-search isearch-case-fold-search))
+      (occur (if isearch-regexp isearch-string
+               (regexp-quote isearch-string))))))
+
+
+;; ---   Bell
+;; get a visual signal instead of beeping
+(setq visible-bell t)
+;; reduce the amount of warning signals
+;; http://www.emacswiki.org/cgi-bin/wiki/AlarmBell
+(setq ring-bell-function
+      (lambda ()
+        (unless (memq this-command
+                      '(isearch-abort abort-recursive-edit exit-minibuffer
+                                      keyboard-quit))
+          (ding))))
+
+
+;; ---   Smooth Scrolling
+;;
+;; http://www.emacswiki.org/cgi-bin/wiki/SmoothScrolling
+(setq scroll-step 1
+        scroll-conservatively 10000)
+;;(add-hook 'post-command-hook
+;;   (lambda ()
+;;     (recenter '("don't redraw"))))
+
+;;
+;; ---   Highlight
+;;
+(setq-default font-lock-function-name-face 'bold)
+;;(setq font-lock-comment-face 'italic); ugly
+(setq-default font-lock-maximum-decoration t)
+(global-font-lock-mode t) ;; turn on font lock globally
+(setq-default search-highlight t)
+(setq-default query-replace-highlight t)
+;;
+(if (> emacs-major-version 20)
+    (blink-cursor-mode t))
+
+
+;;(load "iso-insert") ;; not needed?
+;; for working umlauts on console
+(set-input-mode (car (current-input-mode))
+                (nth 1 (current-input-mode))
+                0)
+
+;; ---   Time
+(setq-default display-time-24hr-format t)
+(setq-default display-time-day-and-date t)
+(display-time)
+
+;; -- calendar
+;; Latitude/Longitude and Timezone: DÃ¼sseldorf, 51.2264/6.77679, +1
+;; Latitude/Longitude and Timezone: Dublin, 53.333/-6.25, 0
+(setq calendar-latitude 53.33)
+(setq calendar-longitude -6.25)
+(setq calendar-location-name "Dublin, Ireland")
+(setq calendar-week-start-day 1) ; Week starts monday
+(setq european-calendar-style 't) ; European style calendar
+
+;; read updated TAGS file silently
+(setq tags-revert-without-query 1)
+
+;; ---   Printing
+(setq lpr-command "lpr")
+(setq  ps-lpr-command "lpr")
+;;(setq lpr-switches '("-P hp5000d "))
+(setq ps-paper-type 'a4) ; Specify printing format
+
+;; ---   Numbering
+(line-number-mode t)
+(column-number-mode t)
+
+;; -- If typed command has a key binding, mention this
+(setq-default suggest-key-bindings t);
+
+;; ---   Compression
+(auto-compression-mode t)
+
+;; ---   tabs
+(setq-default indent-tabs-mode nil)    ; TAB uses spaces not TAB characters
+(setq-default tab-width 4)
+
+
+
+;; ---   menu bars
+;;
+(if window-system
+    (progn
+      (set-scroll-bar-mode 'right)
+      (tool-bar-mode -1)))
+(which-function-mode t)
+;;
+(mouse-wheel-mode t)
+;; (if (load "mwheel" t)
+;;    (mwheel-install))
+;;
+;;(setq inhibit-default-init t)
+(setq-default truncate-lines t)
+(defalias 'yes-or-no-p 'y-or-n-p);; http://www.emacswiki.org/cgi-bin/emacs-en/QuickYes
+;; or (fset 'yes-or-no-p 'y-or-n-p)
+;; Enter the debugger each time an error is found
+(setq debug-on-error t)
+;; Include current buffer name in the title bar
+;; (setq frame-title-format "%b - emacs")
+;; Or set the title bar to show file name if available, buffer name otherwise
+(setq frame-title-format '(buffer-file-name "%f" ("%b")))
+;; make sure your text files end in a newline
+(setq require-final-newline 't)
+;; Or let Emacs ask about any time it is needed
+;; (setq require-final-newline 'query)
+
+;Make cut/copy/paste set/use the X CLIPBOARD in preference to the X
+;PRIMARY. Unbreaks cut and paste between Emacs and well-behaved
+;applications like Mozilla, KDE, and GNOME, but breaks cut and paste
+;between Emacs and old applications like terminals.
+(setq x-select-enable-clipboard t)
+
+(setq user-mail-address "andreas.wilm@gmail.com")
+
+
+
+(setq shell-file-name "/bin/bash") ; Set Shell for M-| command
+(setq sentence-end-double-space nil) ; Sentences end with one space
+(icomplete-mode t) ; Completion in mini-buffer
+
+
+(setq default-major-mode 'text-mode) ; Text-mode is default mode
+
+
+;; Mac specifics
+;; ------------------------------------------------------------------------
+;; Inspired from http://xahlee.org/emacs/xah_emacs_mac.el
+;;
+;; OS X Window System
+(if (string-equal system-type "darwin")
+  (progn
+    (message "Customising for Darwin")
+    ; delete char on external keyboard (kp) is bound to
+    ; backward-delete-char-untabify instead of delete-char on Mac Os X.
+    (global-set-key [kp-delete] 'delete-char)
+    ; Needed on MacOS x for mc-gpg to find gpg
+    ; FIXME Why is this not set by environment?
+    ; delete next line and you get: *ERROR*: gpg could not be found
+    (setenv "PATH" (concat (getenv "PATH") ":/opt/local/bin"))
+    ; delete next line and you get: *ERROR*: Searching for program: No such file or directory, gpg
+    (setq exec-path (append exec-path '("/opt/local/bin")))
+    (if (eq window-system 'ns); Not 'mac!
+        (progn
+          (message "Customising for OS X window-system")
+          ;;(setq mac-command-modifier 'meta)
+          ;;(setq mac-option-modifier 'hyper)
+          ;; the following replaces the two lines above
+          ;; see also http://lojic.com/blog/2010/03/17/switching-from-carbonemacs-to-emacs-app/
+          (setq ns-command-modifier 'meta)))))
+
+;;
+;; the following attempts didn't work fix delete-char but might be
+; useful if not using the external ktyboard!
+;;
+;; http://lispy.wordpress.com/2008/07/15/how-not-to-fix-your-delete-key-in-emacs/
+;;(define-key function-key-map [delete] [F20])
+;;(global-set-key [F20] 'delete-char)
+;;
+;; From /Applications/Emacs.app/Contents//Resources/lisp/bindings.el
+;; Don't do this.  We define <delete> in function-key-map instead.
+;;(define-key global-map [delete] 'backward-delete-char)
+;;(define-key global-map [deletechar]     'delete-char)
+;;(define-key function-key-map [delete] [?\C-?])
+;;(define-key function-key-map [kp-delete] [?\C-?])
+
+
+
+; auto-complete
+; http://cx4a.org/software/auto-complete/index.html
+; C-s to filter
+;
+;(add-to-list 'load-path "~/.emacs.d/auto-complete")
+;(when (try-require 'auto-complete-config)
+;  (add-to-list 'ac-dictionary-directories "~/.emacs.d/autocomplete/ac-dict")
+;  (if (> emacs-major-version 22)
+;      (ac-config-default))
+;      ;; if flyspeed stop working try: ac-flyspell-workaround
+;  )
+
+
+;; CUA
+;; ------------------------------------------------------------------------
+;; http://www.cua.dk/cua.el
+;;
+;; Theoretically allows you to use `C-v', `C-c', and `C-x' to paste,
+;; copy, and cut the region. But most importantly has supercool
+;; rectangle support
+;; 
+;; best activated after all custom key-bindings
+;;
+;; part of emacs since 22.1.1
+(if (> emacs-major-version 21)
+    (progn
+      (cua-mode t)
+      (setq cua-enable-cua-keys nil)
+      ;;(transient-mark-mode 1) ;; No region when it is not highlighted
+      (global-unset-key "\C-v"); normally bound to cua-scroll-up
+      )
+      ;; try external lib (try-require 'cua)
+  )
+
+
+
+
+
+;; OLD STUFF NOT USED ANYMORE
+;; ------------------------------------------------------------------------
+
+
+;; ---  HideShow
+;;
+;(when (try-require 'hideshow)
+;      setq hs-isearch-open 't)
+;; activate with hs-minor-mode
+;; M-x hs-...
+;; C-c @ C-c toggle hide/show
+;; C-c @ C-s show block
+;; C-c @ C-h hide block
+;; C-c @ ESC C-s show all
+;; C-c @ ESC C-h hide all
+
+
+;; ---   Buffer Selction bs
+;; using ido instead
+;;
+;; http://www.geekware.de/software/emacs/
+;; provides bs-show (instead of list-buffers)
+;; bs-cycle-next, bs-cycle-previous...
+;;
+;;(if (require 'bs nil t)
+;;    (progn
+;;      (message "Setting up bs")
+;;      (global-set-key "\C-x\C-b" 'bs-show)
+;;      ;;(global-set-key "\C-xb" 'bs-show)    ;; override default
+;;      (global-set-key [(M right)] 'bs-cycle-next) ;; overwritten by pc-select
+;;      (global-set-key [(M left)] 'bs-cycle-previous)) ;; overwritten by pc-select
+;;  (message "WARNING: bs not available"))
+;;             
+
+;; ---   Abbrev
+;; never used
+;;
+;; if there is an abbrev file, read it in
+;;(abbrev-mode 1)
+;;(setq abbrev-file-name
+;;        "~/local/emacs/abbrev")
+;;(if (file-exists-p abbrev-file-name)
+;;    (message "reading abbrev-file-name")
+;;    (read-abbrev-file))
+;; save abbrevs when files are saved
+;;(setq save-abbrevs t)
+
+
+;; http://www.emacswiki.org/cgi-bin/wiki/LanguageEnvironment
+;; use native language env
+;;
+;;(set-terminal-coding-system 'iso-latin-1)
+;;(set-language-environment "Latin-1")
+;;(set-language-environment 'UTF-8)
+
+
+;; semi-obsolete: (standard-display-european 1)
+
+
+;; ---   Translation Interface
+;;
+;; uses shell command TcLeo: http://wiki.tcl.tk/3211
+;; inspired by http://xsteve.nit.at/prg/emacs/xsteve-functions.el
+;; (Misc Emacs functions from Stefan Reichör)
+;;
+;(defun my-translate (word)
+;  "Query dict.leo.org for a word (calls tcleo.tcl)"
+;  (interactive (list (read-string "Insert Word to translate: " (thing-at-point ;'word))))
+;  (setq translcmd "tcleo.tcl")
+;  (pop-to-buffer "*Translations*")
+;  (goto-char (point-max))
+;  (newline)
+;  (insert "----------")
+;  (newline)
+;  (insert (concat "Lookup " word ":"))
+;  (newline)
+;  (insert (shell-command-to-string (concat translcmd " " word))))
+
+
+;; ---   Tramp
+;;
+;; largely unncessary because of ssh access (e.g. sshfs)
+;; see http://sourceforge.net/projects/tramp/
+;; user manual: http://www.nongnu.org/tramp/
+;; http://www.emacswiki.org/cgi-bin/wiki.pl?TrampMode
+;; C-x C-f /remotehost:dir/file
+;; Using su to edit stuff as root
+;; C-x C-f /su::dir/file
+;; part of emacs > 21.4
+;;
+;;(if (> emacs-major-version 20)
+;;    (if (require 'tramp nil t)
+;;        (progn
+;;          (message "Setting up tramp")
+;;          (setq tramp-default-method "scp")
+;;          (add-to-list 'tramp-default-method-alist
+;;                       '("\\localhost\\'" "\\root\\'" "sudo"))))
+;;  (message "WARNING: tramp not available")
+;;  (message "Not loading of tramp (emacs-version<21)"))
+
+
+;; ---   bar-cursor
+;;
+;;(if (require 'bar-cursor nil t)
+;;    (progn
+;;      (message "Setting up bar-cursor")
+;;      (bar-cursor-mode t))
+;;  (message "WARNING: bar-cursor not available"))
+                     
+
+;;;; Colors
+;;;; list colors with: M-x list-colors-display
+;;
+;;
+;; overwrite using my defaults:
+;(if window-system
+;    (progn
+;      ;; cursor
+;      ;; (set-cursor-color "red")
+;      ;; modeline
+;      ;;(set-face-foreground 'modeline "white") ;
+;      ;;(set-face-background 'modeline "DarkBlue")
+;      ;; region
+;      ;; (set-face-foreground 'region "black") ;; e.g. mouse select region
+;      ;; (set-face-background 'region "skyblue")
+;      ;; highlight
+;      ;;(set-face-foreground 'highlight "black") ;; e.g. marked
+;      ;;(set-face-background 'highlight "skyblue")
+;      (if (> emacs-major-version 20)
+;          (set-face-background 'trailing-whitespace "whitesmoke"))
+;      ))
+
+
+
+
+
+;; ---   Tip-of-the-day
+;;
+;; http://www.emacswiki.org/cgi-bin/emacs-en/TipOfTheDay
+;; (by Dave Pearson)
+;;
+;(message "Defining totd")
+;(defun my-totd ()
+;  "Display Tip-Of-The-Day"
+;  (interactive)
+;  (with-output-to-temp-buffer "*Tip of the day*"
+;    (let* ((commands (loop for s being the symbols
+;                           when (commandp s) collect s))
+;           (command (nth (random (length commands)) commands)))
+;      (princ
+;       (concat "Your tip for the day is:\n========================\n\n"
+;               (describe-function command)
+;               "\n\nInvoke with:\n\n"
+;               (with-temp-buffer
+;                 (where-is command t)
+;                 (buffer-string)))))))
+;;(add-hook 'after-init-hook 'totd)
+
+
+
+;; ---   Indention vs. Completion
+;;
+;; http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks
+;;
+;; turn on indent only at beginning of line
+;; otherwise complete
+;; don't use globally or minbuffer is screwed up
+;;
+;(message "Defining indent-or-complete")
+;(defun my-indent-or-complete ()
+;  "Complete if point is at end of a word, otherwise indent line."
+;  (interactive)
+;  ;;(if (looking-at "\\>")
+;  ;;   (dabbrev-expand nil)
+;  (if (looking-at "$")
+;      (hippie-expand nil))
+;  (indent-for-tab-command))
+
+
+
+;; ansi-term
+;; ---------
+;;
+;; http://user.it.uu.se/~mic/shell-toggle.el
+;; and modified by me
+;;
+;(autoload 'ansi-term-toggle
+;  "ansi-term-toggle"
+;  "Toggles between the *ansishell* buffer and whatever buffer you are editing."
+;  t)
+;(autoload 'ansi-term-toggle-cd
+;  "ansi-term-toggle-cd"
+;  "Pops up a shell-buffer and insert a \"cd <file-dir>\" command."
+;  t)
+;;
+;(when (try-require 'multi-term)
+;    (progn
+;      (setq multi-term-program "/bin/bash")))
+
+
+
+;; ---   insert-shell-cmd
+;;
+;; NOTE same as C-u M-!
+;;
+;; call shell-command and insert output
+;;
+;(message "Defining insert-shell-cmd")
+;(defun my-insert-shell-cmd()
+;  "Insert output of shell-command"
+;  (interactive)
+;  (shell-command (read-string "shell-command: ") t))
+
