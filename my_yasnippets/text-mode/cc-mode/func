@@ -1,0 +1,25 @@
+#name : function template
+# --
+/**
+ * @brief FIXME
+ *
+ * @param[in] x
+ * The parameter x
+ * @param[out] y
+ * The parameter y
+ *
+ * @return The return value
+ * @see anotherFunction()
+ * @note
+ * @todo
+ * @warning
+ * 
+ */    
+${1:void}
+${2:funcname}($3)
+{
+    int i; /* aux */
+    
+    return; 
+}
+/* end of $2() */

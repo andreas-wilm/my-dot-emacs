@@ -1,0 +1,6 @@
+#name : open file for reading and process line by line     
+# --
+fid = open($0, 'r')
+for line in fid:
+    pass
+fid.close()

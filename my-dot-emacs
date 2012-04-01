@@ -1,105 +1,79 @@
 ;; ########################################################################
-;; ------------------------------------------------------------------------
 ;;
 ;; dot.emacs for GNU Emacs
 ;;
 ;; Andreas Wilm <andreas DOT wilm AT gmail DOT com>
 ;;
-;; last change: 2010-11-20
+;; last change: 2012-04-01
 ;;
 ;; ########################################################################
-;; ------------------------------------------------------------------------
 ;;
 ;;
-;; LINKS
-;; -----------------------------------
+;; Custom keybindings:
+;; ==================
 ;;
-;; Emacs Wiki
-;;  http://www.emacswiki.org/
-;; GNU Emacs Manual
-;;  http://www.gnu.org/software/emacs/manual/
-;; Programming in Emacs Lisp
-;;  http://www.gnu.org/manual/emacs-lisp-intro/emacs-lisp-intro.html
-;; GNU Emacs FAQ
-;;  http://www.faqs.org/faqs/GNU-Emacs-FAQ/
+;;   comment-region           C-c C-q
+;;   increase-font-size       C-x C-+
+;;   decrease-font-size       C-x C--
 ;;
 ;;
+;; Other keybindings
+;; =================
 ;;
-;; MEMO:
-;; -----
-;;
-;; My Keybindings:
-;; ---------------
-;;
-;;   next-buffer                  M right
-;;   previous-buffer              M left
-;;   comment-out-region           C-c C-q
-;;   increase-font-size           C-x C-+
-;;   decrease-font-size           C-x C--
-;;
-;;
-;; Defaults:
-;; ---------
-;;   undo                           C-/ or C-_
 ;;   undo all unsaved changes       M-x revert-buffer
-;;   mark-whole-buffer		        C-x h
-;;   
-;;   kill line forward              C-k
-;;   kill line backword             M-0 C-k
+;;   mark-whole-buffer              C-x h
+;;
+;;   kill line backward             M-0 C-k
 ;;   kill sentence forward          M-k
 ;;   kill sexp forward              C-M-k
 ;;   word forward-/backward         M-f/-b
-;;   kill-word                      M-d / C-del
-;;                                 
-;;   search again                   C-s C-s
+;;
 ;;   isearch-backward-regexp        C-M-r
 ;;   isearch-forward-regexp         C-M-s
 ;;   query-replace                  M-r (M-%)
 ;;   query-replace-regexp           C-M-%
-;;   goto-line                      M-g g 
 ;;   beginning-of-buffer            M-<
 ;;   find-tag                       M-.
 ;;   see also complete-tag: find . -type f -iname "*.[ch]" | xargs etags
 ;;   complete-symbol                M-TAB (Esc-TAB)
 ;;   upcase-word                    M-u
 ;;   downcase-word                  M-l
-;;                                 
-;;   fill-paragraph                 M-q
+;;
 ;;   indent the region one space    C-x C-i
-;;   see also indent-region         C-M 
+;;   see also indent-region         C-M
 ;;   center-paragraph               M-o M-S
 ;;   center-line                    M-o M-s
-;;                                 
+;;
 ;;   point-to-register              C-x r SPC
 ;;   jump-to-register               C-x r j
-;;   
+;;
 ;;   insert result of shell-command
 ;;   into buffer                    C-u M-!
 ;;   replace current region with
 ;;   shell command  output which
 ;;   gets region passed as input    C-u M-|
 ;;   see also pipe-through-shell-command
-;;   
+;;
 ;;   C-u (universal argument) passes an argument to the subsequent
 ;;   command.  E.g. to indent a region of plain text by 6 spaces, mark
 ;;   the region, and then type C-u 6 M-C-\.
-;;   
+;;
 ;;   yank earlier kills:            C-u DIGIT C-y
-;;   
-;;   Auctex:
+;;
+;;   auctex:
 ;;     insert environment             C-c C-e
 ;;     insert-macro                   C-c C-m or C-c RET
 ;;     run latex                      C-c C-c
 ;;     run latex on part              C-c C-r
 ;;     complex tex symbol             M-<TAB>
-;;     start viewer                   C-c C-v                             
+;;     start viewer                   C-c C-v
 ;;     run lacheck                    C-c C-c Check
 ;;     query for name of master file  TeX-master-file-ask
 ;;     close environment              C-c ]
-;;   
+;;
 ;;   dabbrev-expand:                C-M-\
-;;   
-;;   macros: 
+;;
+;;   macros:
 ;;     C-x ( - start defining a keyboard macro
 ;;     C-x ) - stop defining the keyboard macro
 ;;     C-x e - execute the keyboard macro
@@ -107,11 +81,11 @@
 ;;
 ;;
 ;; Useful Commands/Libraries I should use more often
-;; -------------------------------------------------
+;; =================================================
 ;;
 ;;   yasnippet
 ;;   auto-complete
-;;    
+;;
 ;;   highlight-changes
 ;;   goto-last-change
 ;;   flyspell
@@ -119,10 +93,10 @@
 ;;   ngrep
 ;;   gdb-many-windows
 ;;   pop-to-mark-command (instead of using registers)
-;;    
+;;
 ;;   occur: hide all lines matching regexp
 ;;          editable version missing (thought that was called all)
-;;    
+;;
 ;;   delete-matching-lines (alias for flush-lines)
 ;;   delete-non-matching lines (alias for keep-lines)
 ;;
@@ -132,57 +106,43 @@
 ;;     align-regexp
 ;;     complex example which replaces all xyz_infile with pcXyzInfile
 ;;       replace-regexp  \([a-z]\)\([A-Za-z0-9]+\)_outfile  pc\,(upcase \1)\2Outfile
-;;    
+;;
 ;;   rectangle:
 ;;     insert text: mark, then string-rectangle
 ;;     delete text: mark, then kill-rectangle
-;;    
-;;
-;; Emacs-Self-Doku:
-;; ----------------
-;;   describe-*
-;;   C-h a -- look for commands (only finds interactive commands, see
-;;            CommandsDefined)
-;;   C-h k -- followed by a key will tell you precisely what that key
-;;             accomplishes, in the current context
-;;   C-h F -- brings up the Emacs FAQ, search using i and s (see also the
-;;            online version: OnlineResources)
-;;   C-h p -- check wether there is an appropriate package to load
-;;   C-h m -- mode help
-;;   apropos-documentation -- search doc strings of functions and
-;;                            variables
-;;   apropos -- searches all function and variables
 ;;
 ;;
-;; ------------------------------------------------------------------------
 ;; ########################################################################
 
 
 
 
 ;; Startup
-;; -------
 ;;
+;; Enter the debugger each time an error is found
 ;;
-(setq inhibit-startup-message t)
-;Enter the debugger each time an error is found
 (setq debug-on-error t)
-(when (featurep 'xemacs)
-  (error "Running xemacs, but dot.emacs was made for GNU Emacs."))
+(setq inhibit-startup-message t)
 (server-start)
 (add-to-list 'load-path "~/.emacs.d/")
 ;(add-to-list 'load-path "~/local/share/emacs/site-lisp/")
 
 
 
+;; Paths
+;;
+(setq exec-path (append exec-path '("~/local/bin")))
+(setenv "PATH" (concat (getenv "PATH") ":~/local/bin"))
+
+
 
 ;; PC-like behaviour
-;; -----------------
 ;;
 ;;(pc-selection-mode) ;; includes transient-mark-mode and delete-selection-mode
 ;; cua-rectangle cursor movements don't work with pc-selection-mode
 ;; use: \s-return and then C-n -p -f -b or mouse
 ;; redefines M right/left!
+;;
 (transient-mark-mode t)
 (delete-selection-mode t)
 (pc-bindings-mode)
@@ -190,63 +150,20 @@
 
 
 ;; Global Key-Bindings
-;; -------------------
 ;;
 ;; suspend Emacs only when running in terminal
+;;
 (if window-system
   (global-unset-key "\C-z")) ; iconify-or-deiconify-frame (C-x C-z)
-
-(global-set-key [(M right)] 'next-buffer) ;; overwritten by pc-select
-(global-set-key [(M left)] 'previous-buffer) ;; overwritten by pc-select
-
-
-
-;; Font
-;; ----
-;;
-;; See also http://hivelogic.com/articles/top-10-programming-fonts
-;;
-(when (>= emacs-major-version 23)
-  (if (eq window-system 'x)
-      (set-default-font "Inconsolata-11")
-    ;; (set-default-font "Monospace-10"))
-    ))
-
-;; Changing the font size on the fly
-;; http://sachachua.com/wp/2006/09/15/emacs-changing-the-font-size-on-the-fly/
-;;
-;; See http://emacs-fu.blogspot.com/2008/12/zooming-inout.html for
-;; another approach
-;;
-;; Starting with GnuEmacs 23 you can use C-x C-+ and C-x C-- to
-;; increase or decrease the buffer text size
-;;
-(when (< emacs-major-version 23)
-  (message "increase-font-size")
-  (defun increase-font-size ()
-    (interactive)
-    (set-face-attribute 'default
-			nil
-			:height
-			(ceiling (* 1.10
-				    (face-attribute 'default :height))))) 
-  (message "decrease-font-size")
-  (defun decrease-font-size ()
-    (interactive)
-    (set-face-attribute 'default
-			nil
-			:height
-			(floor (* 0.9
-				  (face-attribute 'default :height)))))
-  (global-set-key (kbd "C-x C-+") 'increase-font-size)
-  (global-set-key (kbd "C-x C--") 'decrease-font-size))
+;;(global-set-key [(M right)] 'next-buffer) ;; overwritten by pc-select
+;;(global-set-key [(M left)] 'previous-buffer) ;; overwritten by pc-select
 
 
 
-;; missing-packages-list
-;; ---------------------
+;; Missing packages list
 ;;
 ;; from http://www.mygooglest.com/fni/dot-emacs.html
+;; try-require replaces require
 ;;
 (defvar missing-packages-list nil
   "List of packages that `try-require' can't find.")
@@ -273,12 +190,73 @@ of an error, just add the package to a list of missing packages."
 
 
 
+;; Font
+;;
+;; See also http://hivelogic.com/articles/top-10-programming-fonts
+;;
+(when (>= emacs-major-version 23)
+  (if (eq window-system 'x)
+      (set-default-font "Inconsolata-11")
+    ;; (set-default-font "Monospace-10"))
+    ))
+;; Changing the font size on the fly
+;; http://sachachua.com/wp/2006/09/15/emacs-changing-the-font-size-on-the-fly/
+;;
+;; See http://emacs-fu.blogspot.com/2008/12/zooming-inout.html for
+;; another approach
+;;
+;; Starting with GnuEmacs 23 you can use C-x C-+ and C-x C-- to
+;; increase or decrease the buffer text size
+;;
+(when (< emacs-major-version 23)
+  (message "increase-font-size")
+  (defun increase-font-size ()
+    (interactive)
+    (set-face-attribute 'default
+            nil
+            :height
+            (ceiling (* 1.10
+                    (face-attribute 'default :height)))))
+  (message "decrease-font-size")
+  (defun decrease-font-size ()
+    (interactive)
+    (set-face-attribute 'default
+            nil
+            :height
+            (floor (* 0.9
+                  (face-attribute 'default :height)))))
+  (global-set-key (kbd "C-x C-+") 'increase-font-size)
+  (global-set-key (kbd "C-x C--") 'decrease-font-size))
+
+
+
+;; Highlight
+;;
+;(setq-default font-lock-function-name-face 'bold)
+;;(setq font-lock-comment-face 'italic); ugly
+(global-font-lock-mode t) ;; turn on font lock globally
+(setq-default font-lock-maximum-decoration t)
+(setq-default search-highlight t)
+(setq-default query-replace-highlight t)
+(if (> emacs-major-version 20)
+    (blink-cursor-mode t))
+
+
+
+;; Highlight FIXME, BUG etc
+;;
+;; FIXME: font highlight does not work
+;;
+(when (try-require 'fixme-mode)
+      (fixme-mode))
+
+
+
 ;; dos2unix / unix2dos
-;; -------------------
 ;;
 ;; Taken from http://www.jm3.net/code/lisp/dot-emacs
 ;; convert yucky newlines
-;; 
+;;
 (message "Defining dos2unix")
 (defun dos2unix ()
   "Convert yucky newlines"
@@ -287,17 +265,16 @@ of an error, just add the package to a list of missing packages."
   (while (search-forward "\r" nil t) (replace-match "")))
 
 ;; Taken from http://www.ludd.ltu.se/~wilper-8/computer/emacs
-;; 
+;;
 (message "Defining unix2dos")
 (defun unix2dos ()
-	(interactive)
-	(goto-char (point-min))
-	(while (search-forward "\n" nil t) (replace-match "\r\n")))
+    (interactive)
+    (goto-char (point-min))
+    (while (search-forward "\n" nil t) (replace-match "\r\n")))
 
 
 
-;; ascii-table
-;; -----------
+;; ASCII-table
 ;;
 ;; Taken from http://puggy.symonds.net/~anoop/configs/dotemacs.html
 ;; Print the ASCII table.
@@ -318,33 +295,12 @@ of an error, just add the package to a list of missing packages."
 
 
 
-;; numerate-lines
-;; --------------
-;;
-(message "Defining numerate-lines")
-(defun numerate-lines ()
-  "Insert line numbers into buffer"
-  (interactive)
-  (save-excursion
-    (let ((max (1+ (count-lines (point-min)(point-max))))
-          (line 1))
-      (goto-char (point-min))
-      (while (< line max)
-        (setq fmtstr (concat "%" (number-to-string
-                                  (length (number-to-string max))) "d "))    
-        (insert (format fmtstr line))
-        (beginning-of-line 2)
-        (setq line (+ line 1))))))
-
-
-
-;; pipe through shell-command
-;; --------------------------
+;; Pipe through shell-command
 ;;
 ;; pipe region through shell-command and replace region with result
 ;;
 ;; if you just want to run a shell-command on a region with the result
-;;begin printed to a temp buffer, use shell-command-on-region
+;; begin printed to a temp buffer, use shell-command-on-region
 ;;
 ;; original taken from
 ;; http://www.rus.uni-stuttgart.de/42/themen/texte-bilder/editors/gnuemacs/model-emacs.html
@@ -360,8 +316,8 @@ of an error, just add the package to a list of missing packages."
    (read-string "shell-command: ") t))
 
 
+
 ;; insert-date / insert-iso-date
-;; -----------------------------
 ;;
 ;; see also yasnippet time
 ;;
@@ -382,7 +338,6 @@ of an error, just add the package to a list of missing packages."
 
 
 ;; auto-load-tags
-;; --------------
 ;;
 ;; auto load TAGS file if existant
 ;; Add to your mode hooks
@@ -400,10 +355,10 @@ of an error, just add the package to a list of missing packages."
 
 
 ;; color-theme
-;; -----------
 ;;
 ;; http://www.emacswiki.org/elisp/color-theme.el.gz
 ;;
+;; favourites:
 ;; color-theme-clarity
 ;; color-theme-tty-dark
 ;; color-theme-midnight
@@ -418,7 +373,6 @@ of an error, just add the package to a list of missing packages."
 
 
 ;; ido
-;; ---
 ;;
 ;; http://www.emacswiki.org/cgi-bin/wiki/InteractivelyDoThings
 ;; see also
@@ -432,17 +386,16 @@ of an error, just add the package to a list of missing packages."
 ;;    M-s to search
 ;;
 (when (try-require 'ido)
-	  (ido-mode 'both); for buffers and files
-	  ;;(setq ido-enable-flex-matching); enable fuzzy matching
-	  (setq ido-max-prospects 8); don't spam my minibuffer
-	  (setq ido-confirm-unique-completion t); wait for RET, even with unique completion
-	  ;; confirmation is rather annoying
-	  (setq confirm-nonexistent-file-or-buffer nil))
+      (ido-mode 'both); for buffers and files
+      ;;(setq ido-enable-flex-matching); enable fuzzy matching
+      (setq ido-max-prospects 8); don't spam my minibuffer
+      (setq ido-confirm-unique-completion t); wait for RET, even with unique completion
+      ;; confirmation is rather annoying
+      (setq confirm-nonexistent-file-or-buffer nil))
 
 
 
 ;; gnupg support
-;; -------------
 ;;
 ;; use epa-file or mailcrypt & mc-gpg-file-mode
 ;;
@@ -450,43 +403,40 @@ of an error, just add the package to a list of missing packages."
 ;; http://mailcrypt.sourceforge.net/
 ;;
 (if (try-require 'epa-file)
-	(progn
-	  (epa-file-enable))
+    (progn
+      (epa-file-enable))
  (progn
-	(message "Warning: epa-file not found. Will try mailcrypt instead")
-	; FIXME only works with armored files, whereas epa-file does not
-	;  output armored files by default
-	;  Use (epa-armor t) on a per file basis?
-	(when (try-require 'mailcrypt)
-		  (mc-setversion "gpg")
-		  (setq mc-passwd-timeout 3600)
-		  (when (try-require 'mc-gpg-file-mode)
-			  (setq mc-gpg-user-id "andreas.wilm@gmail.com"))
-	  )))
+    (message "Warning: epa-file not found. Will try mailcrypt instead")
+    ; FIXME only works with armored files, whereas epa-file does not
+    ;  output armored files by default
+    ;  Use (epa-armor t) on a per file basis?
+    (when (try-require 'mailcrypt)
+          (mc-setversion "gpg")
+          (setq mc-passwd-timeout 3600)
+          (when (try-require 'mc-gpg-file-mode)
+              (setq mc-gpg-user-id "andreas.wilm@gmail.com"))
+      )))
 
 
 
-;; rst.el: restructured text
-;; -------------------------
+;; restructured text
 ;;
 (try-require 'rst)
 
 
-;; all.el: edit all lines matching regexp
-;; --------------------------------------
+;; edit all lines matching regexp
+;;
 ;; http://groups.google.de/group/comp.emacs/browse_thread/thread/93d284d480e2dfd7/cf4461d655938527?q=occur+read+write&rnum=1&hl=de#cf4461d655938527
 ;;
 (try-require 'all)
 
 
 ;; hide-region
-;; -----------
 ;;
 (try-require 'hide-region)
 
 
 ;; paren: parenthesis matching
-;; ---------------------------
 ;;
 (when (try-require 'paren)
     (progn
@@ -497,42 +447,42 @@ of an error, just add the package to a list of missing packages."
 
 
 ;; htmlize
-;; -------
+;;
 ;; http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el
 ;;
 (try-require 'htmlize)
 
 
 ;; goto-last-change
-;; ----------------
 ;;
 (try-require 'goto-last-change)
 
 
-;; Uniquify: show path info in buffers with otherwise identical filenames
-;; ----------------------------------------------------------------------
+;; uniquify
+;;
+;; show path info in buffers with otherwise identical filenames
+;;
 (when (try-require 'uniquify)
     (progn
       (setq uniquify-buffer-name-style 'post-forward)))
 
 
 ;; comment
-;; -------
 ;;
 ;; old: (autoload 'comment-out-region "comment" nil t)
 ;;      (global-set-key "\C-c\C-q" 'comment-out-region)
 ;;
 ;; part of package newcomment, which is part of emacs
 ;; make sure it's loaded anyway; experienced some trouble with latex otherwise
+;;
 (when (try-require 'newcomment)
       (global-set-key "\C-c\C-q" 'comment-region))
 
 
 
 ;; recentf: recent file menu
-;; -------------------------
 ;;
-;; part of 21, but creates new menu called "files" instead of integrating into files...
+;; part of 21, but creates new menu called "files" instead of integrating into files.
 ;; http://www.djefer.com/info/emacs/recentf.el
 ;;
 (when (try-require 'recentf)
@@ -545,117 +495,55 @@ of an error, just add the package to a list of missing packages."
       (recentf-mode t)))
 
 
-;; autoinsert: for inserting templates
-;; -----------------------------------
+;; autoinsert: inserting templates
 ;;
 (when (try-require 'autoinsert)
     (progn
       (auto-insert-mode) ;; Adds hook to find-files-hook
       (setq auto-insert-directory "~/local/src/emacs-templ/") ;; trailing slash important
       (setq auto-insert-query t) ;; prompt before insertion
-      (define-auto-insert "\\.tcl\\'" "tcl-template.tcl")
-      (define-auto-insert "\\.sh\\'" "bash-template.sh")
-      (define-auto-insert "\\.css\\'" "css-template.css")
       (define-auto-insert "\\.c\\'" "c-template.c")
       (define-auto-insert "\\.py\\'" "python-template.py")
-      (define-auto-insert "\\.html\\'" "html-template.html")
       (add-hook 'find-file-hooks 'auto-insert)))
-     
+
 
 
 ;; tex-site
-;; ---------------
 ;;
 (when (try-require 'tex-site)
     (progn
-  	(setq TeX-quote-after-quote t)    
+    (setq TeX-quote-after-quote t)
     (local-set-key "\C-c\C-q" 'TeX-comment-or-uncomment-region);; comment-region makes trouble
-	;;(TeX-run-style-hooks "german")
-	))
+    ;;(TeX-run-style-hooks "german")
+    ))
 
 
-;; php
-;; ---
+
+;; Tramp
 ;;
-;; NOTE: Not used in a looooong time
+;; In theory unncessary because of ssh access (e.g. sshfs).
+;; but needed for pylint
 ;;
-;; (if (require 'php-mode nil t) fails with emacs 23
-;; with the error message error: `c-lang-defconst' must be used in a file
-;; see http://stackoverflow.com/questions/898063/making-php-mode-compatible-with-emacs-23
-;; the following should work, but breaks mmm-mode
-;;(autoload 'php-mode "php-mode" "Major mode for editing php code." t)
-;;(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
-;; so wait until fixed
+;; C-x C-f /remotehost:dir/file
+;; Using su to edit stuff as root
+;; C-x C-f /su::dir/file
+;; part of emacs > 21.4
 ;;
-;(if (require 'php-mode nil t)
-(if nil
-    (progn
-      (message "Setting up php-mode")
-
-      ;; see http://www.emacswiki.org/cgi-bin/wiki/HtmlModeDeluxe
-      (add-hook 'php-mode-user-hook 'turn-on-font-lock)
-      
-      (if (require 'mmm-mode nil t)
-          (progn
-            (setq mmm-global-mode 'maybe)
-            ;;
-            ;; set up an mmm group for fancy html editing
-            (mmm-add-group
-             'fancy-html
-             '(
-               (html-php-tagged
-                :submode php-mode
-                :face mmm-code-submode-face
-                ;;:front "<[?]php"
-                :front "<[?]"
-                :back "[?]>")
-               (html-css-attribute
-                :submode css-mode
-                :face mmm-declaration-submode-face
-                :front "style=\""
-                :back "\"")))
-            ;;
-            ;; What files to invoke the new html-mode for?
-            (add-to-list 'auto-mode-alist '("\\.inc\\'" . html-mode))
-            (add-to-list 'auto-mode-alist '("\\.phtml\\'" . html-mode))
-            (add-to-list 'auto-mode-alist '("\\.php[0-9]?\\'" . html-mode))
-            (add-to-list 'auto-mode-alist '("\\.[sj]?html?\\'" . html-mode))
-            (add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
-            ;;
-            ;; What features should be turned on in this html-mode?
-            (add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil html-js))
-            (add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil embedded-css))
-            (add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil fancy-html))
-            ;;
-            ;; Not exactly related to editing HTML: enable editing help with mouse-3 in all sgml files
-            (defun go-bind-markup-menu-to-mouse3 ()
-              (define-key sgml-mode-map [(down-mouse-3)] 'sgml-tags-menu))
-            ;;
-            (add-hook 'sgml-mode-hook 'go-bind-markup-menu-to-mouse3)
-            (if window-system
-                (message "FIXME: mmm-default-submode-face unchanged") 
-              (set-variable 'mmm-submode-decoration-level 0)
-              ))
-	(message "WARNING: mmm-mode not available")))
-	(message "WARNING: php-mode not available"))
-
-
-
-;; css-mode
-;; --------
-;;
-;; http://www.emacswiki.org/elisp/css-mode.el
-;;
-(autoload 'css-mode "css-mode"
-  "Mode for editing CSS files" t)
-(add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
-;;(setq cssm-indent-function #'cssm-c-style-indenter)
-;;(setq cssm-indent-level '2)
+;;(if (> emacs-major-version 20)
+;;    (if (require 'tramp nil t)
+;;        (progn
+;;          (message "Setting up tramp")
+;;          (setq tramp-default-method "scp")
+;;          (add-to-list 'tramp-default-method-alist
+;;                       '("\\localhost\\'" "\\root\\'" "sudo"))))
+;;  (message "WARNING: tramp not available")
+;;  (message "Not loading of tramp (emacs-version<21)"))
+(if (> emacs-major-version 20)
+    (try-require 'tramp))
 
 
 
 ;; yasnippet
-;; --------
 ;;
 (add-to-list 'load-path "~/.emacs.d/yasnippet-0.6.1c/")
 (when (try-require 'yasnippet) ;; not yasnippet-bundle
@@ -663,98 +551,74 @@ of an error, just add the package to a list of missing packages."
       (yas/initialize)
       (yas/load-directory "~/.emacs.d/yasnippet-0.6.1c/snippets")
       ;(setq yas/trigger-key (kbd "C-c <kp-multiply>"))
+      ;;hippie expand with yas
+      (add-to-list 'hippie-expand-try-functions-list 'yas/hippie-try-expand)
       ))
 
 
 
-;; pycomplete: python completion
-;; -----------------------------
+;; python
 ;;
-;; http://www.rwdev.eu/articles/emacspyeng
-;; debian version of this only support M-C-i expansion (no help etc)
+;; From http://pedrokroger.com/2010/07/configuring-emacs-as-a-python-ide-2/:
+;; "There are two python modes; python.el and python-mode.el. Although
+;; python.el comes with GNU Emacs 22, I recommend you use
+;; python-mode.el since it has support for ipython"
 ;;
-;; 
-;;(if (require 'pycomplete nil t)
-(when (try-require 'pycomplete)
-    (progn
-      (setq auto-mode-alist (cons '("\\.py$" . python-mode)
-				  auto-mode-alist))
-      (autoload 'python-mode "python-mode" "Python editing mode." t)
-      (autoload 'pymacs-load "pymacs" nil t)
-      (autoload 'pymacs-eval "pymacs" nil t)
-      (autoload 'pymacs-apply "pymacs")
-      (autoload 'pymacs-call "pymacs")
-      ; ideally \t only when at end of line with some stuff before it, but can only do this with wrapper
-      ; like  (if (looking-at "$")
-      (define-key py-mode-map (kbd "C-<tab>") 'py-complete)
-      ))
-(setq interpreter-mode-alist(cons '("python" . python-mode)
-                                  interpreter-mode-alist))
+
+;; Get (void-function declare-function) on MacOS Emacs when loading
+;; python-mode. Apparently declare-function was added 2007-11-17 to
+;; Emacs CVS sources Use the following workaround to avoid error:
+;; Taken from https://gist.github.com/1127403
+(or (fboundp 'declare-function)
+    ;; taken from Emacs 22.2, not present in 22.1:
+    (defmacro declare-function (&rest args)
+      "In Emacs 22, does nothing.  In 23, it will suppress byte-compiler warnings.
+      This definition is so that packages may take advantage of the
+      Emacs 23 feature and still remain compatible with Emacs 22."
+      nil))
+
+(add-to-list 'load-path "~/.emacs.d/python-mode/")
+(setq py-install-directory "~/.emacs.d/python-mode/")
+(when (try-require 'python-mode)
+      (progn
+            (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+            (try-require 'python-pylint)
+
+            ; avoid error: (void-variable py-mode-map)
+            ; https://bugs.launchpad.net/python-mode/+bug/912919
+            ;(defvar py-mode-map python-mode-map)
+            (setq py-mode-map python-mode-map)
+            ;
+            (try-require 'ipython)
+))
 
 
 
-
-;; -----------------------------------------------------------------------
-;; ###   Mode-Hooks
-;; ###
-
-
-
-;; ---   C
+;; C
 ;;
 (add-hook 'c-mode-common-hook
           (lambda ()
             (message "Setting up my C hooks")
-            ;(setq c-basic-offset 4)
-            ;(setq tab-width 4)
-            ;(setq c-default-style "K&R") ; gnu k&r bsd stroustrup linux
-            ;                            ; python java
-            ;(auto-fill-mode t)
-            (setq c-default-style "python") ; gnu k&r bsd stroustrup linux
-            ;(local-set-key [return] 'newline-and-indent)
-            ;(hs-minor-mode t)
-            ;(local-set-key "\C-c\C-q" 'comment-region) ;; c indent-region
+            (setq c-default-style "linux")
+            ; linux and python should be similar according to
+            ; http://en.wikipedia.org/wiki/Indent_style#Variant:_1TBS
+            ; choices: gnu k&r bsd stroustrup linux python java
+
             (auto-load-tags-file)
+
+            ;;(setq c-basic-offset 4)
+            ;;(setq tab-width 4)
+            ;;(auto-fill-mode t)
+            ;(setq c-default-style "python") ; gnu k&r bsd stroustrup linux
+            ;;(local-set-key [return] 'newline-and-indent)
+            ;;(hs-minor-mode t)
+            ;;(local-set-key "\C-c\C-q" 'comment-region) ;; c indent-region
             ;(auto-complete-mode t)
             ))
 
 
-;; ---   Python
-;;
-;; might interfere with pycomplete
-;;
-(add-hook 'python-mode-hook
-          (lambda ()
-            (message "Setting up my Python hooks")
-            (auto-load-tags-file)
-            ;(auto-complete-mode t)
-            ))
 
-
-;; ---   Tcl
-;;
-(add-hook 'tcl-mode-hook
-          (lambda ()
-            (message "Setting up my Tcl hooks")
-            (tcl-auto-fill-mode t)
-            ;(local-set-key [return] 'newline-and-indent)
-
-            ;; -- Tcl-Font
-            ;; see http://www.cs.man.ac.uk/%7Efellowsd/tcl/#fontlock
-            ;; slightly modified by me: original does not go well with dark
-            ;; backgrounds
-            (try-require 'tcl-font nil t)
-            ;(hs-minor-mode t)
-            ;;(auto-load-tags-file)
-            ;; FIXME activated by auto-load-tags-file: why
-            ;;(setq show-trailing-whitespace nil);;
-            ;; FIXME activated by text-mode: why
-            ;;(auto-fill-mode -1)
-            ))
-
-
-
-;; ---   LaTeX & TeX
+;; LaTeX & TeX
 ;;
 (add-hook 'latex-mode-hook
           (lambda ()
@@ -769,7 +633,7 @@ of an error, just add the package to a list of missing packages."
             (setq TeX-auto-untabify t)
             ;(auto-complete-mode t)
             ;; http://staff.science.uva.nl/~dominik/Tools/reftex/reftex.html
-			(when (try-require 'reftex)
+            (when (try-require 'reftex)
               (reftex-mode t)
               (setq reftex-plug-into-AUCTeX t)
               (setq reftex-use-external-file-finders t))
@@ -778,9 +642,9 @@ of an error, just add the package to a list of missing packages."
             ;;(TeX-run-style-hooks "german")
             ))
 (add-hook 'TeX-language-ngerman-hook
-     	  (lambda () (ispell-change-dictionary "german")))
+          (lambda () (ispell-change-dictionary "german")))
 (add-hook 'TeX-language-german-hook
-     	  (lambda () (ispell-change-dictionary "ngerman")))
+          (lambda () (ispell-change-dictionary "ngerman")))
 (add-hook 'tex-mode-hook
           (lambda ()
             (message "just a test: tex-mode-hook..only called when auctex is missing?")
@@ -792,7 +656,7 @@ of an error, just add the package to a list of missing packages."
 
 
 
-;; ---   BibTeX
+;; BibTeX
 ;;
 (add-hook 'bibtex-mode-hook
           (lambda ()
@@ -807,8 +671,9 @@ of an error, just add the package to a list of missing packages."
 
 
 
-;; ---   Shell
+;; Shell
 ;;
+(setq shell-file-name "/bin/bash") ; Set Shell for M-| command
 (add-hook 'sh-mode-hook
           (lambda ()
             (message "Setting up my sh hooks")
@@ -819,7 +684,7 @@ of an error, just add the package to a list of missing packages."
             ))
 
 
-;; ---   Html
+;; Html
 ;;
 ;; xml-lite: http://www.dogbiscuit.org/mdub/software/xml-lite.el
 ;; FIXME: isn't nxml much nicer
@@ -841,8 +706,14 @@ of an error, just add the package to a list of missing packages."
             (flyspell-mode t)
             ))
 
+(add-to-list 'auto-mode-alist '("\\.wml$" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.xhtml$" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
 
-;; ---   Text
+
+
+
+;; Text
 ;;
 (add-hook 'text-mode-hook
           (lambda ()
@@ -852,9 +723,9 @@ of an error, just add the package to a list of missing packages."
             (setq show-trailing-whitespace t)
             (flyspell-mode t)
             ))
-            
-            
-;; ---   Perl
+
+
+;; Perl
 ;;
 (add-hook 'perl-mode-hook
           (lambda ()
@@ -866,53 +737,9 @@ of an error, just add the package to a list of missing packages."
             ;(hs-minor-mode t)
             ))
 
-	
-
-;; ---   Modes Appends
-;;
-;;(setq auto-mode-alist
-;;   (append
-;;       (list '("\\.rvt$" . html-mode)) auto-mode-alist))
-;;(add-to-list 'auto-mode-alist '("\\.css$" . html-mode))
-;;(setq auto-mode-alist
-;;      (cons '("\\.\\(xml\\|xsl\\)\\'" . xml-lite-mode)
-;;            auto-mode-alist))
-(add-to-list 'auto-mode-alist '("\\.wml$" . html-mode))
-(add-to-list 'auto-mode-alist '("\\.xhtml$" . html-mode))
-(add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
-
-
-
-
 
 
 ; =================================================================
-
-
-;; ---  mark the word FIXME
-;;
-;; anyway to do this automatically for all modes?
-;;
-(font-lock-add-keywords 'tcl-mode '(("\\(FIXME\\)"
-                                     1 font-lock-warning-face t)))
-(font-lock-add-keywords 'c-mode '(("\\(FIXME\\)"
-                                   1 font-lock-warning-face t)))
-(font-lock-add-keywords 'emacs-lisp-mode '(("\\(FIXME\\)"
-                                            1 font-lock-warning-face t)))
-(font-lock-add-keywords 'LaTeX-mode '(("\\(FIXME\\)"
-                                       1 font-lock-warning-face t)))
-(font-lock-add-keywords 'bibtex-mode '(("\\(FIXME\\)"
-                                        1 font-lock-warning-face t)))
-(font-lock-add-keywords 'sh-mode '(("\\(FIXME\\)"
-                                    1 font-lock-warning-face t)))
-(font-lock-add-keywords 'html-mode '(("\\(FIXME\\)"
-                                      1 font-lock-warning-face t)))
-(font-lock-add-keywords 'text-mode '(("\\(FIXME\\)"
-                                      1 font-lock-warning-face t)))
-(font-lock-add-keywords 'perl-mode '(("\\(FIXME\\)"
-                                      1 font-lock-warning-face t)))
-(font-lock-add-keywords 'python-mode '(("\\(FIXME\\)"
-                                      1 font-lock-warning-face t)))
 
 
 
@@ -1151,11 +978,16 @@ of an error, just add the package to a list of missing packages."
     )
 )
 
-;; ------------------------------------------------------------------------
-;; ###   Misc   ###########################################################
-;; ###
 
-;; --- Occur and Isearch
+
+
+;; ######################################################################
+;; Misc
+;; ----
+
+
+;; Occur and Isearch
+;;
 ;; Found on
 ;; http://emacsblog.org/2007/02/27/quick-tip-add-occur-to-isearch/
 ;;
@@ -1171,7 +1003,8 @@ of an error, just add the package to a list of missing packages."
                (regexp-quote isearch-string))))))
 
 
-;; ---   Bell
+;; Bell
+;;
 ;; get a visual signal instead of beeping
 (setq visible-bell t)
 ;; reduce the amount of warning signals
@@ -1184,7 +1017,7 @@ of an error, just add the package to a list of missing packages."
           (ding))))
 
 
-;; ---   Smooth Scrolling
+;; Smooth Scrolling
 ;;
 ;; http://www.emacswiki.org/cgi-bin/wiki/SmoothScrolling
 (setq scroll-step 1
@@ -1193,18 +1026,6 @@ of an error, just add the package to a list of missing packages."
 ;;   (lambda ()
 ;;     (recenter '("don't redraw"))))
 
-;;
-;; ---   Highlight
-;;
-(setq-default font-lock-function-name-face 'bold)
-;;(setq font-lock-comment-face 'italic); ugly
-(setq-default font-lock-maximum-decoration t)
-(global-font-lock-mode t) ;; turn on font lock globally
-(setq-default search-highlight t)
-(setq-default query-replace-highlight t)
-;;
-(if (> emacs-major-version 20)
-    (blink-cursor-mode t))
 
 
 ;;(load "iso-insert") ;; not needed?
@@ -1213,46 +1034,53 @@ of an error, just add the package to a list of missing packages."
                 (nth 1 (current-input-mode))
                 0)
 
-;; ---   Time
+;; Time
+;;
 (setq-default display-time-24hr-format t)
 (setq-default display-time-day-and-date t)
 (display-time)
 
-;; -- calendar
+
+;; Calendar
+;;
 ;; Latitude/Longitude and Timezone: DÃ¼sseldorf, 51.2264/6.77679, +1
 ;; Latitude/Longitude and Timezone: Dublin, 53.333/-6.25, 0
-(setq calendar-latitude 53.33)
-(setq calendar-longitude -6.25)
-(setq calendar-location-name "Dublin, Ireland")
+;;
+(setq calendar-latitude 1.3667)
+(setq calendar-longitude 103.8)
+(setq calendar-location-name "Singapore")
 (setq calendar-week-start-day 1) ; Week starts monday
 (setq european-calendar-style 't) ; European style calendar
+
 
 ;; read updated TAGS file silently
 (setq tags-revert-without-query 1)
 
-;; ---   Printing
-(setq lpr-command "lpr")
-(setq  ps-lpr-command "lpr")
+;; Printing
+;;
+;;(setq lpr-command "lpr")
+;;(setq  ps-lpr-command "lpr")
 ;;(setq lpr-switches '("-P hp5000d "))
 (setq ps-paper-type 'a4) ; Specify printing format
 
-;; ---   Numbering
+
+;;  Numbering
+;;
 (line-number-mode t)
 (column-number-mode t)
 
-;; -- If typed command has a key binding, mention this
+;; If typed command has a key binding, mention this
 (setq-default suggest-key-bindings t);
 
-;; ---   Compression
+;; Compression
 (auto-compression-mode t)
 
-;; ---   tabs
+;; Tabs
 (setq-default indent-tabs-mode nil)    ; TAB uses spaces not TAB characters
 (setq-default tab-width 4)
 
 
-
-;; ---   menu bars
+;; Menu bars
 ;;
 (if window-system
     (progn
@@ -1279,17 +1107,16 @@ of an error, just add the package to a list of missing packages."
 ;; Or let Emacs ask about any time it is needed
 ;; (setq require-final-newline 'query)
 
+
 ;Make cut/copy/paste set/use the X CLIPBOARD in preference to the X
 ;PRIMARY. Unbreaks cut and paste between Emacs and well-behaved
 ;applications like Mozilla, KDE, and GNOME, but breaks cut and paste
 ;between Emacs and old applications like terminals.
 (setq x-select-enable-clipboard t)
 
+
 (setq user-mail-address "andreas.wilm@gmail.com")
 
-
-
-(setq shell-file-name "/bin/bash") ; Set Shell for M-| command
 (setq sentence-end-double-space nil) ; Sentences end with one space
 (icomplete-mode t) ; Completion in mini-buffer
 
@@ -1298,7 +1125,7 @@ of an error, just add the package to a list of missing packages."
 
 
 ;; Mac specifics
-;; ------------------------------------------------------------------------
+;;
 ;; Inspired from http://xahlee.org/emacs/xah_emacs_mac.el
 ;;
 ;; OS X Window System
@@ -1323,44 +1150,56 @@ of an error, just add the package to a list of missing packages."
           ;; see also http://lojic.com/blog/2010/03/17/switching-from-carbonemacs-to-emacs-app/
           (setq ns-command-modifier 'meta)))))
 
-;;
-;; the following attempts didn't work fix delete-char but might be
-; useful if not using the external ktyboard!
-;;
-;; http://lispy.wordpress.com/2008/07/15/how-not-to-fix-your-delete-key-in-emacs/
-;;(define-key function-key-map [delete] [F20])
-;;(global-set-key [F20] 'delete-char)
-;;
-;; From /Applications/Emacs.app/Contents//Resources/lisp/bindings.el
-;; Don't do this.  We define <delete> in function-key-map instead.
-;;(define-key global-map [delete] 'backward-delete-char)
-;;(define-key global-map [deletechar]     'delete-char)
-;;(define-key function-key-map [delete] [?\C-?])
-;;(define-key function-key-map [kp-delete] [?\C-?])
 
+;; auto-complete
+;;
+;; http://cx4a.org/software/auto-complete/index.html
+;; C-s to filter
+;;
+;;(add-to-list 'load-path "~/.emacs.d/auto-complete")
+;;(when (try-require 'auto-complete-config)
+;;  (add-to-list 'ac-dictionary-directories "~/.emacs.d/autocomplete/ac-dict")
+;;  (if (> emacs-major-version 22)
+;;      (ac-config-default))
+;;      ;; if flyspeed stop working try: ac-flyspell-workaround
+;;  )
+;;
+;; Get (wrong-number-of-arguments called-interactively-p 1)
+;; on MacOS Emacs. Use the following workaround from
+;; http://paste.lisp.org/display/115598
+;; If we have a version of called-interactively-p that doesn't accept
+;; arguments, redefine it so that it does take arguments. This
+;; retains compatibility with packages that pass arguments to
+;; called-interactively-p.
+(condition-case nil (called-interactively-p 'interactive)
+  (error
+   ; Save reference to called-interactively-p in
+   ; inglorion-system-called-interactively-p
+   (fset 'inglorion-system-called-interactively-p
+         (symbol-function 'called-interactively-p))
+   ; Define called-interactively-p so that it discards
+   ; its arguments and calls inglorion-system-called-interactively-p
+   (fset 'called-interactively-p
+         (lambda (&rest args)
+           (inglorion-system-called-interactively-p)))))
 
+(add-to-list 'load-path "~/.emacs.d/auto-complete")
+(when (try-require 'auto-complete-config)
+      (global-auto-complete-mode t)
+      (add-to-list 'ac-dictionary-directories "~/.emacs.d/autocomplete/ac-dict")
+      (ac-config-default)
+)
 
-; auto-complete
-; http://cx4a.org/software/auto-complete/index.html
-; C-s to filter
-;
-;(add-to-list 'load-path "~/.emacs.d/auto-complete")
-;(when (try-require 'auto-complete-config)
-;  (add-to-list 'ac-dictionary-directories "~/.emacs.d/autocomplete/ac-dict")
-;  (if (> emacs-major-version 22)
-;      (ac-config-default))
-;      ;; if flyspeed stop working try: ac-flyspell-workaround
-;  )
 
 
 ;; CUA
-;; ------------------------------------------------------------------------
+;;
 ;; http://www.cua.dk/cua.el
 ;;
 ;; Theoretically allows you to use `C-v', `C-c', and `C-x' to paste,
 ;; copy, and cut the region. But most importantly has supercool
 ;; rectangle support
-;; 
+;;
 ;; best activated after all custom key-bindings
 ;;
 ;; part of emacs since 22.1.1
@@ -1378,7 +1217,9 @@ of an error, just add the package to a list of missing packages."
 
 
 
-;; OLD STUFF NOT USED ANYMORE
+
+
+;; OLD STUFF
 ;; ------------------------------------------------------------------------
 
 
@@ -1395,37 +1236,6 @@ of an error, just add the package to a list of missing packages."
 ;; C-c @ ESC C-h hide all
 
 
-;; ---   Buffer Selction bs
-;; using ido instead
-;;
-;; http://www.geekware.de/software/emacs/
-;; provides bs-show (instead of list-buffers)
-;; bs-cycle-next, bs-cycle-previous...
-;;
-;;(if (require 'bs nil t)
-;;    (progn
-;;      (message "Setting up bs")
-;;      (global-set-key "\C-x\C-b" 'bs-show)
-;;      ;;(global-set-key "\C-xb" 'bs-show)    ;; override default
-;;      (global-set-key [(M right)] 'bs-cycle-next) ;; overwritten by pc-select
-;;      (global-set-key [(M left)] 'bs-cycle-previous)) ;; overwritten by pc-select
-;;  (message "WARNING: bs not available"))
-;;             
-
-;; ---   Abbrev
-;; never used
-;;
-;; if there is an abbrev file, read it in
-;;(abbrev-mode 1)
-;;(setq abbrev-file-name
-;;        "~/local/emacs/abbrev")
-;;(if (file-exists-p abbrev-file-name)
-;;    (message "reading abbrev-file-name")
-;;    (read-abbrev-file))
-;; save abbrevs when files are saved
-;;(setq save-abbrevs t)
-
-
 ;; http://www.emacswiki.org/cgi-bin/wiki/LanguageEnvironment
 ;; use native language env
 ;;
@@ -1437,129 +1247,17 @@ of an error, just add the package to a list of missing packages."
 ;; semi-obsolete: (standard-display-european 1)
 
 
-;; ---   Translation Interface
-;;
-;; uses shell command TcLeo: http://wiki.tcl.tk/3211
-;; inspired by http://xsteve.nit.at/prg/emacs/xsteve-functions.el
-;; (Misc Emacs functions from Stefan Reichör)
-;;
-;(defun my-translate (word)
-;  "Query dict.leo.org for a word (calls tcleo.tcl)"
-;  (interactive (list (read-string "Insert Word to translate: " (thing-at-point ;'word))))
-;  (setq translcmd "tcleo.tcl")
-;  (pop-to-buffer "*Translations*")
-;  (goto-char (point-max))
-;  (newline)
-;  (insert "----------")
-;  (newline)
-;  (insert (concat "Lookup " word ":"))
-;  (newline)
-;  (insert (shell-command-to-string (concat translcmd " " word))))
-
-
-;; ---   Tramp
-;;
-;; largely unncessary because of ssh access (e.g. sshfs)
-;; see http://sourceforge.net/projects/tramp/
-;; user manual: http://www.nongnu.org/tramp/
-;; http://www.emacswiki.org/cgi-bin/wiki.pl?TrampMode
-;; C-x C-f /remotehost:dir/file
-;; Using su to edit stuff as root
-;; C-x C-f /su::dir/file
-;; part of emacs > 21.4
-;;
-;;(if (> emacs-major-version 20)
-;;    (if (require 'tramp nil t)
-;;        (progn
-;;          (message "Setting up tramp")
-;;          (setq tramp-default-method "scp")
-;;          (add-to-list 'tramp-default-method-alist
-;;                       '("\\localhost\\'" "\\root\\'" "sudo"))))
-;;  (message "WARNING: tramp not available")
-;;  (message "Not loading of tramp (emacs-version<21)"))
-
-
-;; ---   bar-cursor
+;; bar-cursor
 ;;
 ;;(if (require 'bar-cursor nil t)
 ;;    (progn
 ;;      (message "Setting up bar-cursor")
 ;;      (bar-cursor-mode t))
 ;;  (message "WARNING: bar-cursor not available"))
-                     
-
-;;;; Colors
-;;;; list colors with: M-x list-colors-display
-;;
-;;
-;; overwrite using my defaults:
-;(if window-system
-;    (progn
-;      ;; cursor
-;      ;; (set-cursor-color "red")
-;      ;; modeline
-;      ;;(set-face-foreground 'modeline "white") ;
-;      ;;(set-face-background 'modeline "DarkBlue")
-;      ;; region
-;      ;; (set-face-foreground 'region "black") ;; e.g. mouse select region
-;      ;; (set-face-background 'region "skyblue")
-;      ;; highlight
-;      ;;(set-face-foreground 'highlight "black") ;; e.g. marked
-;      ;;(set-face-background 'highlight "skyblue")
-;      (if (> emacs-major-version 20)
-;          (set-face-background 'trailing-whitespace "whitesmoke"))
-;      ))
-
-
-
-
-
-;; ---   Tip-of-the-day
-;;
-;; http://www.emacswiki.org/cgi-bin/emacs-en/TipOfTheDay
-;; (by Dave Pearson)
-;;
-;(message "Defining totd")
-;(defun my-totd ()
-;  "Display Tip-Of-The-Day"
-;  (interactive)
-;  (with-output-to-temp-buffer "*Tip of the day*"
-;    (let* ((commands (loop for s being the symbols
-;                           when (commandp s) collect s))
-;           (command (nth (random (length commands)) commands)))
-;      (princ
-;       (concat "Your tip for the day is:\n========================\n\n"
-;               (describe-function command)
-;               "\n\nInvoke with:\n\n"
-;               (with-temp-buffer
-;                 (where-is command t)
-;                 (buffer-string)))))))
-;;(add-hook 'after-init-hook 'totd)
-
-
-
-;; ---   Indention vs. Completion
-;;
-;; http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks
-;;
-;; turn on indent only at beginning of line
-;; otherwise complete
-;; don't use globally or minbuffer is screwed up
-;;
-;(message "Defining indent-or-complete")
-;(defun my-indent-or-complete ()
-;  "Complete if point is at end of a word, otherwise indent line."
-;  (interactive)
-;  ;;(if (looking-at "\\>")
-;  ;;   (dabbrev-expand nil)
-;  (if (looking-at "$")
-;      (hippie-expand nil))
-;  (indent-for-tab-command))
 
 
 
 ;; ansi-term
-;; ---------
 ;;
 ;; http://user.it.uu.se/~mic/shell-toggle.el
 ;; and modified by me
