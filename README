@@ -1,6 +1,9 @@
-My dot.emacs.
+My dot.emacs. 
 
 Previously posted on my website and found useful by others. Therefore
-made public here, but mainly used by myself for syncing accross machines
+made public here, but mainly used by myself for syncing accross
+machines. Setup biased towards GUI-usage on Mac (emacs-app) and
+CLI-only usage on Linux.
 
-my_yasnippets have to be linked to in yasnippet dir
+Files in my_yasnippets have to be linked to in yasnippet dir.
+

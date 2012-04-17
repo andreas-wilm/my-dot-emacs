@@ -1,0 +1,9 @@
+#name : table template
+# --
+\begin{table}[]% h:here, t:top, b:bottom, p: page, !:override
+\begin{tabular}{}% str:[lcr], *{num}{str}
+\end{tabular}
+\caption{}
+\label{tab:}
+\end{table}
+

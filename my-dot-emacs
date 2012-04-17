@@ -93,7 +93,8 @@
 ;;   ngrep
 ;;   gdb-many-windows
 ;;   pop-to-mark-command (instead of using registers)
-;;
+;;   also C-u C-space or C-u C-@
+
 ;;   occur: hide all lines matching regexp
 ;;          editable version missing (thought that was called all)
 ;;
@@ -250,6 +251,11 @@ of an error, just add the package to a list of missing packages."
 (when (try-require 'fixme-mode)
       (fixme-mode))
 
+
+;; hungry-delete to delete surrounding whitespaces
+;; http://www.emacswiki.org/emacs/hungry-delete
+;; wget --no-check-certificate -nd https://raw.github.com/nflath/hungry-delete/master/hungry-delete.el
+(try-require 'hungry-delete)
 
 
 ;; dos2unix / unix2dos
@@ -545,7 +551,7 @@ of an error, just add the package to a list of missing packages."
 
 ;; yasnippet
 ;;
-(add-to-list 'load-path "~/.emacs.d/yasnippet-0.6.1c/")
+(add-to-list 'load-path "~/.emacs.d/yasnippet/")
 (when (try-require 'yasnippet) ;; not yasnippet-bundle
     (progn
       (yas/initialize)
@@ -559,11 +565,14 @@ of an error, just add the package to a list of missing packages."
 
 ;; python
 ;;
+;; See also
+;; http://www.emacswiki.org/emacs/?action=browse;oldid=PythonMode;id=PythonProgrammingInEmacs
+;;
 ;; From http://pedrokroger.com/2010/07/configuring-emacs-as-a-python-ide-2/:
 ;; "There are two python modes; python.el and python-mode.el. Although
 ;; python.el comes with GNU Emacs 22, I recommend you use
 ;; python-mode.el since it has support for ipython"
-;;
+;; Download from https://launchpad.net/python-mode
 
 ;; Get (void-function declare-function) on MacOS Emacs when loading
 ;; python-mode. Apparently declare-function was added 2007-11-17 to
@@ -580,16 +589,16 @@ of an error, just add the package to a list of missing packages."
 (add-to-list 'load-path "~/.emacs.d/python-mode/")
 (setq py-install-directory "~/.emacs.d/python-mode/")
 (when (try-require 'python-mode)
-      (progn
-            (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-            (try-require 'python-pylint)
-
-            ; avoid error: (void-variable py-mode-map)
-            ; https://bugs.launchpad.net/python-mode/+bug/912919
-            ;(defvar py-mode-map python-mode-map)
-            (setq py-mode-map python-mode-map)
-            ;
-            (try-require 'ipython)
+  (progn
+    (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+    (try-require 'python-pylint)
+    
+    ; avoid error: (void-variable py-mode-map)
+    ; https://bugs.launchpad.net/python-mode/+bug/912919
+    ;(defvar py-mode-map python-mode-map)
+    (setq py-mode-map python-mode-map)
+    ; Download from https://gist.github.com/302848
+    (try-require 'ipython)
 ))
 
 
