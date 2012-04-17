@@ -1,10 +1,6 @@
-;; ########################################################################
-;;
-;; dot.emacs for GNU Emacs
+;; .emacs --- Andreas Wilm's Emacs configuration -*- emacs-lisp -*-
 ;;
 ;; Andreas Wilm <andreas DOT wilm AT gmail DOT com>
-;;
-;; last change: 2012-04-01
 ;;
 ;; ########################################################################
 ;;
@@ -126,7 +122,6 @@
 (setq inhibit-startup-message t)
 (server-start)
 (add-to-list 'load-path "~/.emacs.d/")
-;(add-to-list 'load-path "~/local/share/emacs/site-lisp/")
 
 
 
@@ -555,12 +550,11 @@ of an error, just add the package to a list of missing packages."
 (when (try-require 'yasnippet) ;; not yasnippet-bundle
     (progn
       (yas/initialize)
-      (yas/load-directory "~/.emacs.d/yasnippet-0.6.1c/snippets")
+      (yas/load-directory "~/.emacs.d/yasnippet/snippets")
       ;(setq yas/trigger-key (kbd "C-c <kp-multiply>"))
       ;;hippie expand with yas
       (add-to-list 'hippie-expand-try-functions-list 'yas/hippie-try-expand)
       ))
-
 
 
 ;; python
