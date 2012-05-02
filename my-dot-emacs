@@ -120,7 +120,9 @@
 ;;
 (setq debug-on-error t)
 (setq inhibit-startup-message t)
-(server-start)
+; rarely use the server accept during GUI operation
+(if window-system
+    (server-start))
 (add-to-list 'load-path "~/.emacs.d/")
 
 
@@ -1090,11 +1092,14 @@ of an error, just add the package to a list of missing packages."
       (set-scroll-bar-mode 'right)
       (tool-bar-mode -1)))
 (which-function-mode t)
-;;
-(mouse-wheel-mode t)
+
+
+; exlicitely turn on mouse-wheel-mode if in GUI mode 
+(if window-system
+    (mouse-wheel-mode t))
 ;; (if (load "mwheel" t)
 ;;    (mwheel-install))
-;;
+
 ;;(setq inhibit-default-init t)
 (setq-default truncate-lines t)
 (defalias 'yes-or-no-p 'y-or-n-p);; http://www.emacswiki.org/cgi-bin/emacs-en/QuickYes
@@ -1291,4 +1296,13 @@ of an error, just add the package to a list of missing packages."
 ;  "Insert output of shell-command"
 ;  (interactive)
 ;  (shell-command (read-string "shell-command: ") t))
+
+
+; Scratch
+;
+; enable auto-save for scratch
+;(with-current-buffer (get-buffer "*scratch*")
+;      (auto-save-mode t))
+
+
 
