@@ -243,7 +243,7 @@ of an error, just add the package to a list of missing packages."
 
 ;; Highlight FIXME, BUG etc
 ;;
-;; FIXME: font highlight does not work
+;; FIXME: font highlight does not work. why?
 ;;
 (when (try-require 'fixme-mode)
       (fixme-mode))
@@ -252,7 +252,12 @@ of an error, just add the package to a list of missing packages."
 ;; hungry-delete to delete surrounding whitespaces
 ;; http://www.emacswiki.org/emacs/hungry-delete
 ;; wget --no-check-certificate -nd https://raw.github.com/nflath/hungry-delete/master/hungry-delete.el
-(try-require 'hungry-delete)
+; C-d is delete-char so make it C-c C-d, which might be bound in
+; certain modes already (e.g. py-pdbtrack-toggle-stack-tracking in python)
+;
+; (try-require 'hungry-delete)
+(when (try-require 'hungry-delete)
+  (global-set-key "\C-c\C-d" 'hungry-delete-forward))
 
 
 ;; dos2unix / unix2dos
@@ -559,7 +564,7 @@ of an error, just add the package to a list of missing packages."
       ))
 
 
-;; python
+;; Python
 ;;
 ;; See also
 ;; http://www.emacswiki.org/emacs/?action=browse;oldid=PythonMode;id=PythonProgrammingInEmacs
@@ -595,7 +600,15 @@ of an error, just add the package to a list of missing packages."
     (setq py-mode-map python-mode-map)
     ; Download from https://gist.github.com/302848
     (try-require 'ipython)
-))
+    ))
+
+(add-hook 'python-mode-hook
+          (lambda ()
+            (message "Setting up my Python hooks")
+            ; see comments above on hungry-delete-mode
+            ; C-c C-d is py-pdbtrack-toggle-stack-tracking in python which I don't use
+            (local-set-key "\C-c\C-d" 'hungry-delete-forward)
+            ))
 
 
 
@@ -1190,12 +1203,15 @@ of an error, just add the package to a list of missing packages."
    (fset 'called-interactively-p
          (lambda (&rest args)
            (inglorion-system-called-interactively-p)))))
-
+ 
 (add-to-list 'load-path "~/.emacs.d/auto-complete")
 (when (try-require 'auto-complete-config)
       (global-auto-complete-mode t)
       (add-to-list 'ac-dictionary-directories "~/.emacs.d/autocomplete/ac-dict")
       (ac-config-default)
+
+      (setq ac-auto-start nil)
+      (global-set-key "\M-/" 'auto-complete)
 )
 
 
