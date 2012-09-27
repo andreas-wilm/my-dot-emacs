@@ -130,9 +130,9 @@
 ; rarely use the server accept during GUI operation
 (if window-system
     ;; http://stackoverflow.com/questions/6397323/how-to-avoid-the-message-of-server-start-while-opening-another-emacs-session
-    (require 'server)
-    (or (server-running-p)
-        (server-start)))
+    ;;(require 'server)
+    ;;(or (server-running-p)
+        (server-start));;)
 (add-to-list 'load-path "~/.emacs.d/")
 
 
@@ -213,9 +213,10 @@ of an error, just add the package to a list of missing packages."
 ;;     (find-if (lambda (f) (font-existsp f)) fonts))
 (when (>= emacs-major-version 23)
   (if window-system
-      (condition-case err
+      (condition-case nil
           (set-face-attribute 'default nil :font "Inconsolata-13:weight=normal")
-        )))
+        (error (message "Couldn't load Inconsolata")))
+    ))
 
 
 ;; Changing the font size on the fly
@@ -407,7 +408,7 @@ of an error, just add the package to a list of missing packages."
             (progn
               (message "Setting up color-theme-solarized")
               (color-theme-solarized-dark))
-          color-theme-clarity))
+          (condition-case nil (color-theme-clarity) (error (message "Couldn't load color-theme-clarity")))))
       ))
 
 
