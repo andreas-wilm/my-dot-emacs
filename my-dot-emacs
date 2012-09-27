@@ -1,6 +1,8 @@
-;; .emacs --- Andreas Wilm's Emacs configuration -*- emacs-lisp -*-
+;; .emacs --- My Emacs configuration -*- emacs-lisp -*-
 ;;
 ;; Andreas Wilm <andreas DOT wilm AT gmail DOT com>
+;;
+;; Tuned towards use in the Mac GUI and Linux terminal version
 ;;
 ;; ########################################################################
 ;;
@@ -11,7 +13,7 @@
 ;;   comment-region           C-c C-q
 ;;   increase-font-size       C-x C-+
 ;;   decrease-font-size       C-x C--
-;;
+;;   next-/previous-buffer    M left/right
 ;;
 ;; Other keybindings
 ;; =================
@@ -81,10 +83,9 @@
 ;;
 ;;   yasnippet
 ;;   auto-complete
-;;
+;;   shell
 ;;   highlight-changes
 ;;   goto-last-change
-;;   flyspell
 ;;   compile
 ;;   ngrep
 ;;   gdb-many-windows
@@ -98,6 +99,10 @@
 ;;   delete-non-matching lines (alias for keep-lines)
 ;;
 ;;   regexp:
+;;
+;;     note: interactive command won't understand escape sequences
+;;     (\n, \t). Use C-q <tab> and C-q C-j for \t and \n
+;;
 ;;     highlight-regexp
 ;;     re-builder
 ;;     align-regexp
@@ -132,17 +137,17 @@
 (setq exec-path (append exec-path '("~/local/bin")))
 (setenv "PATH" (concat (getenv "PATH") ":~/local/bin"))
 
-
-
-;; PC-like behaviour
-;;
-;;(pc-selection-mode) ;; includes transient-mark-mode and delete-selection-mode
-;; cua-rectangle cursor movements don't work with pc-selection-mode
-;; use: \s-return and then C-n -p -f -b or mouse
-;; redefines M right/left!
-;;
+;; enabled by default in GNU Emacs 23 and onwards
 (transient-mark-mode t)
+
+;; DEL genuinley deletes region, ie it's not put on the kill ring
 (delete-selection-mode t)
+
+; PC compatibility: Delete and its variants delete forward instead of
+; backward, C-Backspace kills backward a word (as C-Delete normally
+; would), M-Backspace does undo, Home and End move to beginning and
+; end of line, C-Home and C-End move to beginning and end of buffer
+; and C-Escape does list-buffers.
 (pc-bindings-mode)
 
 
@@ -153,8 +158,8 @@
 ;;
 (if window-system
   (global-unset-key "\C-z")) ; iconify-or-deiconify-frame (C-x C-z)
-;;(global-set-key [(M right)] 'next-buffer) ;; overwritten by pc-select
-;;(global-set-key [(M left)] 'previous-buffer) ;; overwritten by pc-select
+(global-set-key [(M right)] 'next-buffer)
+(global-set-key [(M left)] 'previous-buffer)
 
 
 
@@ -191,11 +196,14 @@ of an error, just add the package to a list of missing packages."
 ;; Font
 ;;
 ;; See also http://hivelogic.com/articles/top-10-programming-fonts
+;; Menlo seems to be good as well
 ;;
 (when (>= emacs-major-version 23)
-  (if (eq window-system 'x)
-      (set-default-font "Inconsolata-11")
-    ;; (set-default-font "Monospace-10"))
+  (if window-system
+    (set-default-font "Inconsolata-12")
+    ; Mac default seems to be
+    ;-apple-Monaco-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1
+    ;(set-default-font "Monospace-10")
     ))
 ;; Changing the font size on the fly
 ;; http://sachachua.com/wp/2006/09/15/emacs-changing-the-font-size-on-the-fly/
@@ -366,16 +374,27 @@ of an error, just add the package to a list of missing packages."
 ;;
 ;; http://www.emacswiki.org/elisp/color-theme.el.gz
 ;;
-;; favourites:
-;; color-theme-clarity
-;; color-theme-tty-dark
-;; color-theme-midnight
-;;
 (if window-system
     (when (try-require 'color-theme)
       (message "Setting up color-theme")
-      ;(color-theme-initialize)
-      ;(color-theme-clarity)))
+      (color-theme-initialize)
+      ;;(color-theme-dark-laptop)
+      ;;(color-theme-hober)
+      ;;(color-theme-clarity)
+      ;; this somehow ignores/overrides the default font
+      ;; https://github.com/sellout/emacs-color-theme-solarized
+      ;; note there are different ways to activate solarized depending on the emcs version. this one's for emacs<24
+      (add-to-list 'load-path "~/.emacs.d/color-theme-solarized/")
+
+      (if (try-require 'color-theme-tangotango)
+          (progn
+            (message "Using color-theme-tangotango")
+            (color-theme-tangotango))
+        (if (try-require 'color-theme-solarized)
+            (progn
+              (message "Setting up color-theme-solarized")
+              (color-theme-solarized-dark))
+          color-theme-clarity))
       ))
 
 
@@ -553,6 +572,8 @@ of an error, just add the package to a list of missing packages."
 
 ;; yasnippet
 ;;
+;; FIXME translate old skel's to yasnippet
+;;
 (add-to-list 'load-path "~/.emacs.d/yasnippet/")
 (when (try-require 'yasnippet) ;; not yasnippet-bundle
     (progn
@@ -605,8 +626,11 @@ of an error, just add the package to a list of missing packages."
 (add-hook 'python-mode-hook
           (lambda ()
             (message "Setting up my Python hooks")
-            ; see comments above on hungry-delete-mode
-            ; C-c C-d is py-pdbtrack-toggle-stack-tracking in python which I don't use
+            ; C-c C-d is py-pdbtrack-toggle-stack-tracking
+            ; which I don't use
+            ;
+            ; FIXME make sure hungry-delete was successfully loaded
+            ; first
             (local-set-key "\C-c\C-d" 'hungry-delete-forward)
             ))
 
@@ -762,246 +786,15 @@ of an error, just add the package to a list of missing packages."
 
 
 
-;; ------------------------------------------------------------------------
-;; ###   Skeleton   #######################################################
-;; ###
-;; ###  FIXME convert these to yasnippet snippets
-;;
-;;
-(defvar skeleton-enabled t)
-(when skeleton-enabled
-
-  ;; ---   skel-tcl-proc
-  ;;
-  ;; insert a tcl proc template
-  ;;
-  (define-skeleton skel-tcl-proc
-    "Insert a tcl proc template"
-    ""
-    \n >
-    "# ---   " (setq v1 (skeleton-read "proc name? "))
-    \n >
-    "#"
-    \n >
-    "# <FIXME:shortdescription>"
-    \n >
-    "#"
-    \n >
-    "# IN:"
-    \n >
-    "# OUT:"
-    \n >
-    "# SIDEEFFECTS:"
-    \n >
-    "# NOTES:"
-    \n >
-    "#"
-    \n >
-    "proc " v1 " {} {"
-    \n >
-    "################"
-    \n >
-    _
-    \n >
-    "}"
-    \n >
-    "# " v1
-    \n
-    )
-
-
-  ;; ---   skel-tcl-readfile
-  ;;
-  ;; insert a tcl readfile template
-  ;;
-  (define-skeleton skel-tcl-readfile
-    "Insert a tcl proc template"
-    ""
-    \n >
-    "set fid [open $faddress r]"
-    \n >
-    "while {[gets $fid line]!=-1} {"
-    \n >
-    "if {![regexp {^ *\#} $line]} {"
-    \n >
-    "puts \"no comment in $line\""
-    \n >
-    "}"
-    \n >
-    "}"
-    \n >
-    "close $fid"
-    \n
-    )
-
-
-  ;; ---   skel-bash-func
-  ;;
-  ;; insert a bash function template
-  ;;
-  (define-skeleton skel-bash-func
-    "Insert a bash function template"
-    ""
-    \n >
-    "###   " (setq v1 (skeleton-read "proc name? "))
-    \n >
-    "#"
-    \n >
-    "# FIXME:description"
-    \n >
-    "#"
-    \n >
-    v1 "()"
-    \n >
-    "{"
-    \n >
-    "if [ -z \"$1\" ]; then"
-    \n >
-    "FIXME:DOSOMETHING"
-    \n >
-    "fi"
-    \n >
-    "}"
-    \n >
-    "# " v1
-    \n
-    )
-
-
-  ;; ---   skel-c-func
-  ;;
-  ;; insert a c function template
-  ;;
-  (define-skeleton skel-c-func
-    "Insert a c function template"
-    ""
-    \n >
-    "/***   " (setq v1 (skeleton-read "proc name? ")) "   ***"
-    \n >
-    "*"
-    \n >
-    "* FIXME:description"
-    \n >
-    "*"
-    \n >
-    "* ARGUMENTS:"
-    \n >
-    "* RETURN:"
-    \n >
-    "* SIDEEFFECTS:"
-    \n >
-    "* NOTES:"
-    \n >
-    "*/"
-    \n >
-    "void"
-    \n >
-    v1 "()"
-    \n >
-    "{"
-    \n >
-    "}"
-    \n >
-    "/***   end: " v1 "   ***/"
-    \n
-    )
-
-
-
-  ;; ---   skel-bibtex-entry
-  ;;
-  ;; insert a bibtex entry template
-  ;;
-  (define-skeleton skel-bibtex-entry
-    "Insert a bibtex entry template"
-    ""
-    \n >
-    "@ARTICLE{,"
-    \n >
-    "author   = \"\","
-    \n >
-    "title    = {{}},"
-    \n >
-    "journal  = {},"
-    \n >
-    "year     = {},"
-    \n >
-    "volume   = {\\PrintVol{}},"
-    \n >
-    "number   = {},"
-    \n >
-    "pages    = {},"
-    \n >
-    "abstract = {},"
-    \n >
-    "URL      = {},"
-    \n >
-    "eprint   = {}"
-    \n >
-    "}"
-    \n
-    )
-
-
-  ;; ---   skel-bibtex-entry
-  ;;
-  ;; insert a bibtex entry template
-  ;;
-  (define-skeleton skel-beamer-frame
-    "Insert a latex-beamer frame template"
-    ""
-    \n >
-    "\\begin{frame}"
-    \n >
-    "\\frametitle{FIXME:title}"
-    \n >
-    "\\end{frame}"
-    \n >
-    "%"
-    \n >
-    "\\mynote{%"
-    \n >
-    "\\begin{minipage}{0.5\\textwidth}"
-    \n >
-    "\\tiny"
-    \n >
-    "% \\begin{itemize}"
-    \n >
-    "%\\setlength{\\itemsep}{1pt}"
-    \n >
-    "% \\item"
-    \n >
-    "% \\end{itemize}"
-    \n >
-    "\\end{minipage}\\hfill%"
-    \n >
-    "\\begin{minipage}{0.5\\textwidth}"
-    \n >
-    "\\tiny"
-    \n >
-    "% \\begin{itemize}"
-    \n >
-    "%\\setlength{\\itemsep}{1pt}"
-    \n >
-    "% \\item"
-    \n >
-    "% \\end{itemize}"
-    \n >
-    "\\textit{Transition:}"
-    \n >
-    "\\end{minipage}"
-    \n >
-    "}"
-    \n
-    )
-)
-
-
-
-
 ;; ######################################################################
 ;; Misc
 ;; ----
+
+;; http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks#toc3
+;; Found via https://github.com/ki/my-dot-emacs/blob/master/dot-emacs.txt
+ (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+        "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+        (flet ((process-list ())) ad-do-it))
 
 
 ;; Occur and Isearch
@@ -1238,11 +1031,6 @@ of an error, just add the package to a list of missing packages."
   )
 
 
-
-
-
-
-
 ;; OLD STUFF
 ;; ------------------------------------------------------------------------
 
@@ -1260,6 +1048,7 @@ of an error, just add the package to a list of missing packages."
 ;; C-c @ ESC C-h hide all
 
 
+
 ;; http://www.emacswiki.org/cgi-bin/wiki/LanguageEnvironment
 ;; use native language env
 ;;
@@ -1268,21 +1057,11 @@ of an error, just add the package to a list of missing packages."
 ;;(set-language-environment 'UTF-8)
 
 
-;; semi-obsolete: (standard-display-european 1)
-
-
-;; bar-cursor
-;;
-;;(if (require 'bar-cursor nil t)
-;;    (progn
-;;      (message "Setting up bar-cursor")
-;;      (bar-cursor-mode t))
-;;  (message "WARNING: bar-cursor not available"))
-
-
 
 ;; ansi-term
 ;;
+;; can just use shell
+;; 
 ;; http://user.it.uu.se/~mic/shell-toggle.el
 ;; and modified by me
 ;;
@@ -1301,24 +1080,9 @@ of an error, just add the package to a list of missing packages."
 
 
 
-;; ---   insert-shell-cmd
-;;
-;; NOTE same as C-u M-!
-;;
-;; call shell-command and insert output
-;;
-;(message "Defining insert-shell-cmd")
-;(defun my-insert-shell-cmd()
-;  "Insert output of shell-command"
-;  (interactive)
-;  (shell-command (read-string "shell-command: ") t))
-
-
 ; Scratch
 ;
 ; enable auto-save for scratch
 ;(with-current-buffer (get-buffer "*scratch*")
 ;      (auto-save-mode t))
-
-
 
