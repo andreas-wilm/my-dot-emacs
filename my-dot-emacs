@@ -4,6 +4,8 @@
 ;;
 ;; Tuned towards use in the Mac GUI and Linux terminal version
 ;;
+;; NOTE: I don't know any Lisp! This is cargo-cult code.
+;;
 ;; ########################################################################
 ;;
 ;;
@@ -127,7 +129,10 @@
 (setq inhibit-startup-message t)
 ; rarely use the server accept during GUI operation
 (if window-system
-    (server-start))
+    ;; http://stackoverflow.com/questions/6397323/how-to-avoid-the-message-of-server-start-while-opening-another-emacs-session
+    (require 'server)
+    (or (server-running-p)
+        (server-start)))
 (add-to-list 'load-path "~/.emacs.d/")
 
 
@@ -198,13 +203,21 @@ of an error, just add the package to a list of missing packages."
 ;; See also http://hivelogic.com/articles/top-10-programming-fonts
 ;; Menlo seems to be good as well
 ;;
+;;(defun font-existsp (font)
+;;  "Check if font exists: http://www.emacswiki.org/emacs/SetFonts
+;;  Doesn't seem to work for Inconsolata on startup even though
+;;  it's there"
+;;  (if (null (member font (font-family-list))) nil t))
+;;(defun font-candidate (&rest fonts)
+;;     "Return existing font which first match."
+;;     (find-if (lambda (f) (font-existsp f)) fonts))
 (when (>= emacs-major-version 23)
   (if window-system
-    (set-default-font "Inconsolata-12")
-    ; Mac default seems to be
-    ;-apple-Monaco-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1
-    ;(set-default-font "Monospace-10")
-    ))
+      (condition-case err
+          (set-face-attribute 'default nil :font "Inconsolata-13:weight=normal")
+        )))
+
+
 ;; Changing the font size on the fly
 ;; http://sachachua.com/wp/2006/09/15/emacs-changing-the-font-size-on-the-fly/
 ;;
