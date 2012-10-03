@@ -265,7 +265,7 @@ of an error, just add the package to a list of missing packages."
 
 ;; Highlight FIXME, BUG etc
 ;;
-;; FIXME: font highlight does not work. why?
+;; FIXME: font highlight does only work after reloading dot.emacs?!
 ;;
 (when (try-require 'fixme-mode)
       (fixme-mode))
@@ -280,6 +280,29 @@ of an error, just add the package to a list of missing packages."
 ; (try-require 'hungry-delete)
 (when (try-require 'hungry-delete)
   (global-set-key "\C-c\C-d" 'hungry-delete-forward))
+
+;; multiple cursors
+;; https://github.com/magnars/multiple-cursors.el
+;;
+;; The basics:
+;;
+;; When you have an active region that spans multiple lines, the
+;; following will add a cursor to each line:
+;; mc/edit-lines
+;;
+;; When you want to add multiple cursors not based on continuous
+;; lines, but based on keywords in the buffer, use:
+;; mc/mark-next-like-this)
+;; mc/mark-previous-like-this)
+;; mc/mark-all-like-this)
+;; When you have an active region that spans multiple lines, the
+;; preceeding three commands will add one cursor to each line.
+;;
+;; set-rectangular-region-anchor
+;; Think of this one as set-mark except you're marking a rectangular region.
+;;
+(add-to-list 'load-path "~/.emacs.d/multiple-cursors.el/")
+(try-require 'multiple-cursors)
 
 
 ;; dos2unix / unix2dos
@@ -748,7 +771,7 @@ of an error, just add the package to a list of missing packages."
 (add-hook 'html-mode-hook
           (lambda ()
             (message "Setting up my html hooks")
-            (if (try-require 'xml-lite nil t)
+            (if (try-require 'xml-lite)
                 (progn
                   (xml-lite-mode t)
                   (setq xml-lite-indent-offset 2))
