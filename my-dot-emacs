@@ -127,17 +127,13 @@
 ;;
 (setq debug-on-error t)
 (setq inhibit-startup-message t)
-; rarely use the server accept during GUI operation
 (if window-system
-    ;; http://stackoverflow.com/questions/6397323/how-to-avoid-the-message-of-server-start-while-opening-another-emacs-session
-    ;;(require 'server)
-    ;;(or (server-running-p)
-        (server-start));;)
+    (server-start))
 (add-to-list 'load-path "~/.emacs.d/")
 
 
 
-;; Paths
+;; paths
 ;;
 (setq exec-path (append exec-path '("~/local/bin")))
 (setenv "PATH" (concat (getenv "PATH") ":~/local/bin"))
@@ -145,7 +141,7 @@
 ;; enabled by default in GNU Emacs 23 and onwards
 (transient-mark-mode t)
 
-;; DEL genuinley deletes region, ie it's not put on the kill ring
+;; del genuinley deletes region, ie it's not put on the kill ring
 (delete-selection-mode t)
 
 ; PC compatibility: Delete and its variants delete forward instead of
@@ -163,6 +159,8 @@
 ;;
 (if window-system
   (global-unset-key "\C-z")) ; iconify-or-deiconify-frame (C-x C-z)
+
+;; buffer switching
 (global-set-key [(M right)] 'next-buffer)
 (global-set-key [(M left)] 'previous-buffer)
 
