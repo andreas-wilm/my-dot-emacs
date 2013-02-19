@@ -58,6 +58,7 @@
 ;;   command.  E.g. to indent a region of plain text by 6 spaces, mark
 ;;   the region, and then type C-u 6 M-C-\.
 ;;
+;;   jump to latest pos in local mark ring: C-u C-SPC
 ;;   yank earlier kills:            C-u DIGIT C-y
 ;;
 ;;   auctex:
@@ -149,7 +150,8 @@
 ; would), M-Backspace does undo, Home and End move to beginning and
 ; end of line, C-Home and C-End move to beginning and end of buffer
 ; and C-Escape does list-buffers.
-(pc-bindings-mode)
+; Stopped working for me using emacs 24.2 on Mac
+; (pc-bindings-mode)
 
 
 
@@ -325,24 +327,6 @@ of an error, just add the package to a list of missing packages."
 
 
 
-;; ASCII-table
-;;
-;; Taken from http://puggy.symonds.net/~anoop/configs/dotemacs.html
-;; Print the ASCII table.
-;;
-(message "Defining ascii-table")
-(defun ascii-table ()
-  "Print the ascii table."
-  (interactive)
-  (switch-to-buffer "*ASCII*")
-  (erase-buffer)
-  (insert (format "ASCII characters up to number %d.\n" 254))
-  (insert (format "Dec Hex Char\n"))
-  (let ((i 0))
-    (while (< i 254)
-      (setq i (+ i 1))
-      (insert (format "%4d %c %x\n" i i i))))
-  (beginning-of-buffer))
 
 
 
@@ -1121,3 +1105,22 @@ of an error, just add the package to a list of missing packages."
 ;(with-current-buffer (get-buffer "*scratch*")
 ;      (auto-save-mode t))
 
+
+;; ASCII-table
+;;
+;; Taken from http://puggy.symonds.net/~anoop/configs/dotemacs.html
+;; Print the ASCII table.
+;; Unnecessary. Just type man ascii
+;(message "Defining ascii-table")
+;(defun ascii-table ()
+;  "Print the ascii table."
+;  (interactive)
+;  (switch-to-buffer "*ASCII*")
+;  (erase-buffer)
+;  (insert (format "ASCII characters up to number %d.\n" 254))
+;  (insert (format "Dec Hex Char\n"))
+;  (let ((i 0))
+;    (while (< i 254)
+;      (setq i (+ i 1))
+;      (insert (format "%4d %c %x\n" i i i))))
+;  (beginning-of-buffer))
