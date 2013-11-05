@@ -2,9 +2,9 @@
 ;;
 ;; Andreas Wilm <andreas DOT wilm AT gmail DOT com>
 ;;
-;; Tuned towards use in the Mac GUI and Linux terminal version
+;; Tuned for use in Mac GUI and Linux terminal
 ;;
-;; NOTE: I don't know any Lisp! This is cargo-cult code.
+;; Cargo-cult warning!
 ;;
 ;; ########################################################################
 ;;
@@ -431,17 +431,25 @@ of an error, just add the package to a list of missing packages."
 ;;    M-p and M-n for previous/next
 ;;    M-s to search
 ;;
+; http://www.emacswiki.org/emacs/InteractivelyDoThings
 (when (try-require 'ido)
-      (ido-mode 'both); for buffers and files
-      ;;(setq ido-enable-flex-matching); enable fuzzy matching
-      (setq ido-max-prospects 8); don't spam my minibuffer
-      (setq ido-confirm-unique-completion t); wait for RET, even with unique completion
-      ;; confirmation is rather annoying
-      (setq confirm-nonexistent-file-or-buffer nil))
+  (setq ido-enable-flex-matching t); fuzzy matching
+  (setq ido-everywhere t)
+  (ido-mode 1))
+;      (ido-mode 'both); for buffers and files
+;      ;;(setq ido-enable-flex-matching); enable fuzzy matching
+;      (setq ido-max-prospects 8); don't spam my minibuffer
+;      (setq ido-confirm-unique-completion t); wait for RET, even with unique completion
+;      ;; confirmation is rather annoying
+;      (setq confirm-nonexistent-file-or-buffer nil))
+;;
+; helm: nice overkill. want tab-completion everywhere instead so stick with ido
+; https://github.com/emacs-helm/helm/wiki
+;(add-to-list 'load-path "~/.emacs.d/helm.git")
+;(require 'helm-config)
 
 
-
-;; gnupg support
+;; Gnupg support
 ;;
 ;; use epa-file or mailcrypt & mc-gpg-file-mode
 ;;
