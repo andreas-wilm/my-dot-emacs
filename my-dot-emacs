@@ -112,8 +112,8 @@
 ;;     complex example which replaces all xyz_infile with pcXyzInfile
 ;;       replace-regexp  \([a-z]\)\([A-Za-z0-9]+\)_outfile  pc\,(upcase \1)\2Outfile
 ;;
-;;   rectangle:
-;;     insert text: mark, then string-rectangle
+;;   rectangle: http://emacswiki.org/emacs/RectangleCommands
+;;     insert text: mark, then C-x r t (string-rectangle)
 ;;     delete text: mark, then kill-rectangle
 ;;
 ;;
@@ -281,28 +281,6 @@ of an error, just add the package to a list of missing packages."
 (when (try-require 'hungry-delete)
   (global-set-key "\C-c\C-d" 'hungry-delete-forward))
 
-;; multiple cursors
-;; https://github.com/magnars/multiple-cursors.el
-;;
-;; The basics:
-;;
-;; When you have an active region that spans multiple lines, the
-;; following will add a cursor to each line:
-;; mc/edit-lines
-;;
-;; When you want to add multiple cursors not based on continuous
-;; lines, but based on keywords in the buffer, use:
-;; mc/mark-next-like-this)
-;; mc/mark-previous-like-this)
-;; mc/mark-all-like-this)
-;; When you have an active region that spans multiple lines, the
-;; preceeding three commands will add one cursor to each line.
-;;
-;; set-rectangular-region-anchor
-;; Think of this one as set-mark except you're marking a rectangular region.
-;;
-(add-to-list 'load-path "~/.emacs.d/multiple-cursors.el/")
-(try-require 'multiple-cursors)
 
 
 ;; dos2unix / unix2dos
@@ -1132,3 +1110,28 @@ of an error, just add the package to a list of missing packages."
 ;      (setq i (+ i 1))
 ;      (insert (format "%4d %c %x\n" i i i))))
 ;  (beginning-of-buffer))
+
+;; multiple cursors
+;; https://github.com/magnars/multiple-cursors.el
+;;
+;; The basics:
+;;
+;; When you have an active region that spans multiple lines, the
+;; following will add a cursor to each line:
+;; mc/edit-lines
+;;
+;; When you want to add multiple cursors not based on continuous
+;; lines, but based on keywords in the buffer, use:
+;; mc/mark-next-like-this)
+;; mc/mark-previous-like-this)
+;; mc/mark-all-like-this)
+;; When you have an active region that spans multiple lines, the
+;; preceeding three commands will add one cursor to each line.
+;;
+;; set-rectangular-region-anchor
+;; Think of this one as set-mark except you're marking a rectangular region.
+;;
+;(add-to-list 'load-path "~/.emacs.d/multiple-cursors.el/")
+;(try-require 'multiple-cursors)
+
+
