@@ -93,7 +93,7 @@
 ;;   also C-u C-space or C-u C-@
 ;;
 ;;   occur: hide all lines matching regexp
-;;          editable version missing (thought that was called all)
+;;   then occur-edit-mode (e) if you want to edit
 ;;
 ;;   delete-matching-lines (alias for flush-lines)
 ;;   delete-non-matching lines (alias for keep-lines)
@@ -116,16 +116,15 @@
 ;;
 ;; ########################################################################
 
+;; --------------------------------------------------------------------
+;; startup
+;; --------------------------------------------------------------------
 
-
-
-;; Startup
-;;
+ 
 (setq debug-on-error t)
 (setq inhibit-startup-message t)
 (if window-system
     (server-start))
-
 
 ;; Paths
 ;;
@@ -133,37 +132,15 @@
 (setq exec-path (append exec-path '("~/local/bin")))
 (setenv "PATH" (concat (getenv "PATH") ":~/local/bin"))
 
-;; enabled by default in GNU Emacs 23 and onwards
-(transient-mark-mode t)
 
-;; del genuinley deletes region, ie it's not put on the kill ring
-(delete-selection-mode t)
-
-;; PC compatibility: Delete and its variants delete forward instead of
-;; backward, C-Backspace kills backward a word (as C-Delete normally
-;; would), M-Backspace does undo, Home and End move to beginning and
-;; end of line, C-Home and C-End move to beginning and end of buffer
-;; and C-Escape does list-buffers.
+;; package loading
 ;;
-;; Stopped working for me using emacs 24.2 on Mac
-;; (pc-bindings-mode)
-
-
-
-;; Global Key-Bindings
+;; https://github.com/jwiegley/use-package
+(add-to-list 'load-path "~/.emacs.d/use-package.git")
+(require 'use-package)
 ;;
-;; suspend Emacs only when running in terminal
-;;
-(if window-system
-  (global-unset-key "\C-z")) ; iconify-or-deiconify-frame (C-x C-z)
-
-;; buffer switching
-(global-set-key [(M right)] 'next-buffer)
-(global-set-key [(M left)] 'previous-buffer)
-
-
-
-;; Missing packages list
+;; try-require. in theory deprecated by use-package unless for
+;; packages that should be loaded directly
 ;;
 ;; from http://www.mygooglest.com/fni/dot-emacs.html
 ;; try-require replaces require
@@ -191,6 +168,40 @@ of an error, just add the package to a list of missing packages."
        (add-to-list 'missing-packages-list feature 'append))
      nil)))
 
+
+;; --------------------------------------------------------------------
+;; misc global stuff
+;; --------------------------------------------------------------------
+
+(setq default-major-mode 'text-mode)
+
+(transient-mark-mode t)
+
+;; del genuinley deletes region, ie it's not put on the kill ring
+(delete-selection-mode t)
+
+;; PC compatibility: Delete and its variants delete forward instead of
+;; backward, C-Backspace kills backward a word (as C-Delete normally
+;; would), M-Backspace does undo, Home and End move to beginning and
+;; end of line, C-Home and C-End move to beginning and end of buffer
+;; and C-Escape does list-buffers.
+;;
+;; Stopped working for me using emacs 24.2 on Mac
+;; (pc-bindings-mode)
+
+;; suspend Emacs only when running in terminal
+(if window-system
+  (global-unset-key "\C-z")) ; iconify-or-deiconify-frame (C-x C-z)
+
+;; buffer switching
+(global-set-key [(M right)] 'next-buffer)
+(global-set-key [(M left)] 'previous-buffer)
+
+(setq user-mail-address "andreas.wilm@gmail.com")
+
+;; --------------------------------------------------------------------
+;; chrome
+;; --------------------------------------------------------------------
 
 
 ;; Font
@@ -244,6 +255,19 @@ of an error, just add the package to a list of missing packages."
   (global-set-key (kbd "C-x C--") 'decrease-font-size))
 
 
+;; Menu bars
+;;
+(if window-system
+    (progn
+      (set-scroll-bar-mode 'right)
+      (tool-bar-mode -1)))
+(which-function-mode t)
+
+
+;; --------------------------------------------------------------------
+;; chrome
+;; --------------------------------------------------------------------
+
 
 ;; Highlight
 ;;
@@ -255,111 +279,6 @@ of an error, just add the package to a list of missing packages."
 (setq-default query-replace-highlight t)
 (if (> emacs-major-version 20)
     (blink-cursor-mode t))
-
-
-
-;; Highlight FIXME, BUG etc
-;;
-;; FIXME: font highlight does only work after reloading dot.emacs?!
-;;
-(when (try-require 'fixme-mode)
-      (fixme-mode))
-
-
-;; hungry-delete to delete surrounding whitespaces
-;; http://www.emacswiki.org/emacs/hungry-delete
-;; wget --no-check-certificate -nd https://raw.github.com/nflath/hungry-delete/master/hungry-delete.el
-; C-d is delete-char so make it C-c C-d, which might be bound in
-; certain modes already (e.g. py-pdbtrack-toggle-stack-tracking in python)
-;
-; (try-require 'hungry-delete)
-(when (try-require 'hungry-delete)
-  (global-set-key "\C-c\C-d" 'hungry-delete-forward))
-
-
-
-;; dos2unix / unix2dos
-;;
-;; Taken from http://www.jm3.net/code/lisp/dot-emacs
-;; convert yucky newlines
-;;
-(message "Defining dos2unix")
-(defun dos2unix ()
-  "Convert yucky newlines"
-  (interactive)
-  (goto-char (point-min))
-  (while (search-forward "\r" nil t) (replace-match "")))
-
-;; Taken from http://www.ludd.ltu.se/~wilper-8/computer/emacs
-;;
-(message "Defining unix2dos")
-(defun unix2dos ()
-    (interactive)
-    (goto-char (point-min))
-    (while (search-forward "\n" nil t) (replace-match "\r\n")))
-
-
-
-
-
-
-;; Pipe through shell-command
-;;
-;; pipe region through shell-command and replace region with result
-;;
-;; if you just want to run a shell-command on a region with the result
-;; begin printed to a temp buffer, use shell-command-on-region
-;;
-;; original taken from
-;; http://www.rus.uni-stuttgart.de/42/themen/texte-bilder/editors/gnuemacs/model-emacs.html
-;;
-(message "Defining pipe-though-shell-command")
-(defun pipe-through-shell-command ()
-  "Pipe region through shell-command and replace region with result"
-  (interactive)
-  ;;(mark-whole-buffer)
-  (shell-command-on-region
-   ;(point-min) (point-max)
-   (mark) (point)
-   (read-string "shell-command: ") t))
-
-
-
-;; insert-date / insert-iso-date
-;;
-;; see also yasnippet time
-;;
-(message "Defining insert-date")
-(defun insert-date ()
-  "Insert the current date."
-  (interactive)
-  (insert (format-time-string "%c" (current-time))))
-(defun insert-date-time ()
-  "Insert the current date and time."
-  (interactive)
-  (insert (format-time-string "%Y%m%d %H%M" (current-time))))
-(defun insert-iso-date ()
-  "Display the current date and time."
-  (interactive)
-  (insert (format-time-string "%Y-%m-%d" (current-time))))
-
-
-
-;; auto-load-tags
-;;
-;; auto load TAGS file if existant
-;; Add to your mode hooks
-;; build using eg: find . -type f -iname "*.[ch]" | xargs etags
-;;
-(message "Defining auto-load-tags-file")
-(defun auto-load-tags-file ()
-  "Automatically loads TAGS file if existant."
-  (interactive)
-  (let ((tag-file (concat default-directory "TAGS")))
-    (if (file-exists-p tag-file)
-        (visit-tags-table tag-file)
-      (message "No tag-file found"))))
-
 
 
 ;; color-theme
@@ -389,100 +308,28 @@ of an error, just add the package to a list of missing packages."
           (condition-case nil (color-theme-clarity) (error (message "Couldn't load color-theme-clarity")))))
       ))
 
-
-
-;; ido
+;; Bell
 ;;
-;; http://www.emacswiki.org/cgi-bin/wiki/InteractivelyDoThings
-;; see also
-;; http://emacs-fu.blogspot.com/2009/02/switching-buffers.html
+;; get a visual signal instead of beeping
+(setq visible-bell t)
+;; reduce the amount of warning signals
+;; http://www.emacswiki.org/cgi-bin/wiki/AlarmBell
+(setq ring-bell-function
+      (lambda ()
+        (unless (memq this-command
+                      '(isearch-abort abort-recursive-edit exit-minibuffer
+                                      keyboard-quit))
+          (ding))))
+
+
+;; Smooth Scrolling
 ;;
-;; NOTES:
-;; Open file (C-x C-f):
-;;    C-j to create a new file named with the text you entered
-;; Recently visited directories:
-;;    M-p and M-n for previous/next
-;;    M-s to search
-;;
-; http://www.emacswiki.org/emacs/InteractivelyDoThings
-(when (try-require 'ido)
-  (setq ido-enable-flex-matching t); fuzzy matching
-  (setq ido-everywhere t)
-  (ido-mode 1))
-;      (ido-mode 'both); for buffers and files
-;      ;;(setq ido-enable-flex-matching); enable fuzzy matching
-;      (setq ido-max-prospects 8); don't spam my minibuffer
-;      (setq ido-confirm-unique-completion t); wait for RET, even with unique completion
-;      ;; confirmation is rather annoying
-;      (setq confirm-nonexistent-file-or-buffer nil))
-;;
-; helm: nice overkill. want tab-completion everywhere instead so stick with ido
-; https://github.com/emacs-helm/helm/wiki
-;(add-to-list 'load-path "~/.emacs.d/helm.git")
-;(require 'helm-config)
-
-
-;; Gnupg support
-;;
-;; use epa-file or mailcrypt & mc-gpg-file-mode
-;;
-;; http://www.emacswiki.org/elisp/mc-gpg-file-mode.el
-;; http://mailcrypt.sourceforge.net/
-;;
-(if (try-require 'epa-file)
-    (progn
-      (epa-file-enable))
- (progn
-    (message "Warning: epa-file not found. Will try mailcrypt instead")
-    ; FIXME only works with armored files, whereas epa-file does not
-    ;  output armored files by default
-    ;  Use (epa-armor t) on a per file basis?
-    (when (try-require 'mailcrypt)
-          (mc-setversion "gpg")
-          (setq mc-passwd-timeout 3600)
-          (when (try-require 'mc-gpg-file-mode)
-              (setq mc-gpg-user-id "andreas.wilm@gmail.com"))
-      )))
-
-
-
-;; restructured text
-;;
-(try-require 'rst)
-
-
-;; edit all lines matching regexp
-;;
-;; http://groups.google.de/group/comp.emacs/browse_thread/thread/93d284d480e2dfd7/cf4461d655938527?q=occur+read+write&rnum=1&hl=de#cf4461d655938527
-;;
-(try-require 'all)
-
-
-;; hide-region
-;;
-(try-require 'hide-region)
-
-
-;; paren: parenthesis matching
-;;
-(when (try-require 'paren)
-    (progn
-      (show-paren-mode t)
-      (setq show-paren-delay 0)))
-;;(setq blink-matching-paren-distance nil) ; Blinking parenthesis
-;; (setq show-paren-style 'expression) ; Highlight text between parens
-
-
-;; htmlize
-;;
-;; http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el
-;;
-(try-require 'htmlize)
-
-
-;; goto-last-change
-;;
-(try-require 'goto-last-change)
+;; http://www.emacswiki.org/cgi-bin/wiki/SmoothScrolling
+(setq scroll-step 1
+        scroll-conservatively 10000)
+;;(add-hook 'post-command-hook
+;;   (lambda ()
+;;     (recenter '("don't redraw"))))
 
 
 ;; uniquify
@@ -494,6 +341,69 @@ of an error, just add the package to a list of missing packages."
       (setq uniquify-buffer-name-style 'post-forward)))
 
 
+;; Highlight FIXME, BUG etc
+;;
+;; FIXME: font highlight does only work after reloading dot.emacs?!
+;;
+(when (try-require 'fixme-mode)
+      (fixme-mode))
+
+
+;; --------------------------------------------------------------------
+;; misc packages
+;; --------------------------------------------------------------------
+
+;; Gnupg support
+;;
+;; use epa-file or mailcrypt & mc-gpg-file-mode
+;;
+;; http://www.emacswiki.org/elisp/mc-gpg-file-mode.el
+;; http://mailcrypt.sourceforge.net/
+;;
+(use-package epa-file
+    :defer t
+    :init
+    (progn
+       (epa-file-enable)))
+;; only works with armored files, whereas epa-file does not
+;; output armored files by default
+;; Use (epa-armor t) on a per file basis?
+;; (when (try-require 'mailcrypt)
+;;       (mc-setversion "gpg")
+;;       (setq mc-passwd-timeout 3600)
+;;       (when (try-require 'mc-gpg-file-mode)
+;;           (setq mc-gpg-user-id "andreas.wilm@gmail.com"))
+;;   )))
+
+
+;; hungry-delete to delete surrounding whitespaces
+;; like build in c function
+;;
+(use-package hungry-delete
+  :bind ("\C-c\C-d" . hungry-delete-forward))
+
+
+;; restructured text
+;;
+(use-package rst)
+
+;; hide-region
+(use-package hide-region)
+
+;; paren: parenthesis matching
+;;
+(when (try-require 'paren)
+    (progn
+      (show-paren-mode t)
+      (setq show-paren-delay 0)))
+
+;; htmlize
+(use-package htmlize)
+
+;; goto-last-change
+(use-package goto-last-change)
+
+
 ;; comment
 ;;
 ;; old: (autoload 'comment-out-region "comment" nil t)
@@ -502,9 +412,9 @@ of an error, just add the package to a list of missing packages."
 ;; part of package newcomment, which is part of emacs
 ;; make sure it's loaded anyway; experienced some trouble with latex otherwise
 ;;
-(when (try-require 'newcomment)
-      (global-set-key "\C-c\C-q" 'comment-region))
-
+;(when (try-require 'newcomment)
+;      (global-set-key "\C-c\C-q" 'comment-region))
+(global-set-key "\C-c\C-q" 'comment-region)
 
 
 ;; recentf: recent file menu
@@ -522,28 +432,15 @@ of an error, just add the package to a list of missing packages."
       (recentf-mode t)))
 
 
-;; autoinsert: inserting templates
-;;
-(when (try-require 'autoinsert)
-    (progn
-      (auto-insert-mode) ;; Adds hook to find-files-hook
-      (setq auto-insert-directory "~/local/src/emacs-templ/") ;; trailing slash important
-      (setq auto-insert-query t) ;; prompt before insertion
-      (define-auto-insert "\\.c\\'" "c-template.c")
-      (define-auto-insert "\\.py\\'" "python-template.py")
-      (add-hook 'find-file-hooks 'auto-insert)))
-
-
 
 ;; tex-site
 ;;
-(when (try-require 'tex-site)
-    (progn
-    (setq TeX-quote-after-quote t)
-    (local-set-key "\C-c\C-q" 'TeX-comment-or-uncomment-region);; comment-region makes trouble
-    ;;(TeX-run-style-hooks "german")
-    ))
-
+;(when (try-require 'tex-site)
+;    (progn
+;    (setq TeX-quote-after-quote t)
+;    (local-set-key "\C-c\C-q" 'TeX-comment-or-uncomment-region);; comment-region makes trouble
+;    ;;(TeX-run-style-hooks "german")
+;    ))
 
 
 ;; Tramp
@@ -568,21 +465,6 @@ of an error, just add the package to a list of missing packages."
 (if (> emacs-major-version 20)
     (try-require 'tramp))
 
-
-
-;; yasnippet
-;;
-;; FIXME translate old skel's to yasnippet
-;;
-(add-to-list 'load-path "~/.emacs.d/yasnippet/")
-(when (try-require 'yasnippet) ;; not yasnippet-bundle
-    (progn
-      (yas/initialize)
-      (yas/load-directory "~/.emacs.d/yasnippet/snippets")
-      ;(setq yas/trigger-key (kbd "C-c <kp-multiply>"))
-      ;;hippie expand with yas
-      (add-to-list 'hippie-expand-try-functions-list 'yas/hippie-try-expand)
-      ))
 
 
 ;; Python
@@ -623,6 +505,11 @@ of an error, just add the package to a list of missing packages."
     (try-require 'ipython)
     ))
 
+
+;; ----------------------------------------------------------------------
+;; mode hooks
+;; ----------------------------------------------------------------------
+
 (add-hook 'python-mode-hook
           (lambda ()
             (message "Setting up my Python hooks")
@@ -633,8 +520,6 @@ of an error, just add the package to a list of missing packages."
             ; first
             (local-set-key "\C-c\C-d" 'hungry-delete-forward)
             ))
-
-
 
 ;; C
 ;;
@@ -657,7 +542,6 @@ of an error, just add the package to a list of missing packages."
             ;;(local-set-key "\C-c\C-q" 'comment-region) ;; c indent-region
             ;(auto-complete-mode t)
             ))
-
 
 
 ;; LaTeX & TeX
@@ -712,7 +596,6 @@ of an error, just add the package to a list of missing packages."
             ))
 
 
-
 ;; Shell
 ;;
 (setq shell-file-name "/bin/bash") ; Set Shell for M-| command
@@ -747,12 +630,9 @@ of an error, just add the package to a list of missing packages."
             (setq show-trailing-whitespace t)
             (flyspell-mode t)
             ))
-
 (add-to-list 'auto-mode-alist '("\\.wml$" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.xhtml$" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
-
-
 
 
 ;; Text
@@ -781,14 +661,188 @@ of an error, just add the package to a list of missing packages."
 
 
 
-; =================================================================
+;; ----------------------------------------------------------------------
+;; completion
+;; ----------------------------------------------------------------------
+
+;; ido
+;;
+;; http://www.emacswiki.org/cgi-bin/wiki/InteractivelyDoThings
+;; see also
+;; http://emacs-fu.blogspot.com/2009/02/switching-buffers.html
+;;
+;; NOTES:
+;; Open file (C-x C-f):
+;;    C-j to create a new file named with the text you entered
+;; Recently visited directories:
+;;    M-p and M-n for previous/next
+;;    M-s to search
+;;
+; http://www.emacswiki.org/emacs/InteractivelyDoThings
+(when (try-require 'ido)
+  (setq ido-enable-flex-matching t); fuzzy matching
+  (setq ido-everywhere t)
+  (ido-mode 1))
+;      (ido-mode 'both); for buffers and files
+;      ;;(setq ido-enable-flex-matching); enable fuzzy matching
+;      (setq ido-max-prospects 8); don't spam my minibuffer
+;      (setq ido-confirm-unique-completion t); wait for RET, even with unique completion
+;      ;; confirmation is rather annoying
+;      (setq confirm-nonexistent-file-or-buffer nil))
 
 
 
+;; autoinsert: inserting templates
+;;
+(use-package autoinsert
+    :defer t
+    :init
+    (progn
+      (auto-insert-mode) ;; Adds hook to find-files-hook
+      (setq auto-insert-directory "~/local/src/emacs-templ/") ;; trailing slash important
+      (setq auto-insert-query t) ;; prompt before insertion
+      (define-auto-insert "\\.c\\'" "c-template.c")
+      (define-auto-insert "\\.py\\'" "python-template.py")
+      (add-hook 'find-file-hooks 'auto-insert)))
 
-;; ######################################################################
-;; Misc
-;; ----
+;; yasnippet
+;;
+;; FIXME translate old skel's to yasnippet
+;;
+(add-to-list 'load-path "~/.emacs.d/yasnippet/")
+(when (try-require 'yasnippet) ;; not yasnippet-bundle
+    (progn
+      (yas/initialize)
+      (yas/load-directory "~/.emacs.d/yasnippet/snippets")
+      ;(setq yas/trigger-key (kbd "C-c <kp-multiply>"))
+      ;;hippie expand with yas
+      (add-to-list 'hippie-expand-try-functions-list 'yas/hippie-try-expand)
+      ))
+
+;; auto-complete
+;;
+;; http://cx4a.org/software/auto-complete/index.html
+;; C-s to filter
+;;
+;;(add-to-list 'load-path "~/.emacs.d/auto-complete")
+;;(when (try-require 'auto-complete-config)
+;;  (add-to-list 'ac-dictionary-directories "~/.emacs.d/autocomplete/ac-dict")
+;;  (if (> emacs-major-version 22)
+;;      (ac-config-default))
+;;      ;; if flyspeed stop working try: ac-flyspell-workaround
+;;  )
+;;
+;; Get (wrong-number-of-arguments called-interactively-p 1)
+;; on MacOS Emacs. Use the following workaround from
+;; http://paste.lisp.org/display/115598
+;; If we have a version of called-interactively-p that doesn't accept
+;; arguments, redefine it so that it does take arguments. This
+;; retains compatibility with packages that pass arguments to
+;; called-interactively-p.
+(condition-case nil (called-interactively-p 'interactive)
+  (error
+   ; Save reference to called-interactively-p in
+   ; inglorion-system-called-interactively-p
+   (fset 'inglorion-system-called-interactively-p
+         (symbol-function 'called-interactively-p))
+   ; Define called-interactively-p so that it discards
+   ; its arguments and calls inglorion-system-called-interactively-p
+   (fset 'called-interactively-p
+         (lambda (&rest args)
+           (inglorion-system-called-interactively-p)))))
+ 
+(add-to-list 'load-path "~/.emacs.d/auto-complete")
+(when (try-require 'auto-complete-config)
+  (progn
+    (global-auto-complete-mode t)
+    (add-to-list 'ac-dictionary-directories "~/.emacs.d/autocomplete/ac-dict")
+    (ac-config-default)
+    (setq ac-auto-start nil)
+    (global-set-key "\M-/" 'auto-complete)))
+
+
+
+;; --------------------------------------------------------------------
+;; custom functions
+;; --------------------------------------------------------------------
+
+
+;; dos2unix / unix2dos
+;;
+;; Taken from http://www.jm3.net/code/lisp/dot-emacs
+;; convert yucky newlines
+;;
+(message "Defining dos2unix")
+(defun dos2unix ()
+  "Convert yucky newlines"
+  (interactive)
+  (goto-char (point-min))
+  (while (search-forward "\r" nil t) (replace-match "")))
+
+;; Taken from http://www.ludd.ltu.se/~wilper-8/computer/emacs
+;;
+(message "Defining unix2dos")
+(defun unix2dos ()
+    (interactive)
+    (goto-char (point-min))
+    (while (search-forward "\n" nil t) (replace-match "\r\n")))
+
+
+;; Pipe through shell-command
+;;
+;; pipe region through shell-command and replace region with result
+;;
+;; if you just want to run a shell-command on a region with the result
+;; begin printed to a temp buffer, use shell-command-on-region
+;;
+;; original taken from
+;; http://www.rus.uni-stuttgart.de/42/themen/texte-bilder/editors/gnuemacs/model-emacs.html
+;;
+(message "Defining pipe-though-shell-command")
+(defun pipe-through-shell-command ()
+  "Pipe region through shell-command and replace region with result"
+  (interactive)
+  ;;(mark-whole-buffer)
+  (shell-command-on-region
+   ;(point-min) (point-max)
+   (mark) (point)
+   (read-string "shell-command: ") t))
+
+
+;; insert-date / insert-iso-date
+;;
+;; see also yasnippet time
+;;
+(message "Defining insert-date")
+(defun insert-date ()
+  "Insert the current date."
+  (interactive)
+  (insert (format-time-string "%c" (current-time))))
+(defun insert-date-time ()
+  "Insert the current date and time."
+  (interactive)
+  (insert (format-time-string "%Y%m%d %H%M" (current-time))))
+(defun insert-iso-date ()
+  "Display the current date and time."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d" (current-time))))
+
+
+;; auto-load-tags
+;;
+;; auto load TAGS file if existant
+;; Add to your mode hooks
+;; build using eg: find . -type f -iname "*.[ch]" | xargs etags
+;;
+(message "Defining auto-load-tags-file")
+(defun auto-load-tags-file ()
+  "Automatically loads TAGS file if existant."
+  (interactive)
+  (let ((tag-file (concat default-directory "TAGS")))
+    (if (file-exists-p tag-file)
+        (visit-tags-table tag-file)
+      (message "No tag-file found"))))
+
 
 ;; http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks#toc3
 ;; Found via https://github.com/ki/my-dot-emacs/blob/master/dot-emacs.txt
@@ -802,9 +856,9 @@ of an error, just add the package to a list of missing packages."
 ;; Found on
 ;; http://emacsblog.org/2007/02/27/quick-tip-add-occur-to-isearch/
 ;;
-;;  adds an extra keybinding to interactive search (C-s) that runs
-;;  occur on the current search string/regexp, immediately showing all
-;;  hits in the entire buffer. Example: C-s foo C-o
+;; adds an extra keybinding to interactive search (C-s) that runs
+;; occur on the current search string/regexp, immediately showing all
+;; hits in the entire buffer. Example: C-s foo C-o
 ;;
 (define-key isearch-mode-map (kbd "C-o")
   (lambda ()
@@ -814,29 +868,9 @@ of an error, just add the package to a list of missing packages."
                (regexp-quote isearch-string))))))
 
 
-;; Bell
-;;
-;; get a visual signal instead of beeping
-(setq visible-bell t)
-;; reduce the amount of warning signals
-;; http://www.emacswiki.org/cgi-bin/wiki/AlarmBell
-(setq ring-bell-function
-      (lambda ()
-        (unless (memq this-command
-                      '(isearch-abort abort-recursive-edit exit-minibuffer
-                                      keyboard-quit))
-          (ding))))
-
-
-;; Smooth Scrolling
-;;
-;; http://www.emacswiki.org/cgi-bin/wiki/SmoothScrolling
-(setq scroll-step 1
-        scroll-conservatively 10000)
-;;(add-hook 'post-command-hook
-;;   (lambda ()
-;;     (recenter '("don't redraw"))))
-
+;; ----------------------------------------------------------------------
+;; misc settings
+;; ----------------------------------------------------------------------
 
 
 ;;(load "iso-insert") ;; not needed?
@@ -891,15 +925,6 @@ of an error, just add the package to a list of missing packages."
 (setq-default tab-width 4)
 
 
-;; Menu bars
-;;
-(if window-system
-    (progn
-      (set-scroll-bar-mode 'right)
-      (tool-bar-mode -1)))
-(which-function-mode t)
-
-
 ; exlicitely turn on mouse-wheel-mode if in GUI mode 
 (if window-system
     (mouse-wheel-mode t))
@@ -928,14 +953,10 @@ of an error, just add the package to a list of missing packages."
 ;between Emacs and old applications like terminals.
 (setq x-select-enable-clipboard t)
 
-
-(setq user-mail-address "andreas.wilm@gmail.com")
-
 (setq sentence-end-double-space nil) ; Sentences end with one space
 (icomplete-mode t) ; Completion in mini-buffer
 
 
-(setq default-major-mode 'text-mode) ; Text-mode is default mode
 
 
 ;; Mac specifics
@@ -963,172 +984,3 @@ of an error, just add the package to a list of missing packages."
           ;; the following replaces the two lines above
           ;; see also http://lojic.com/blog/2010/03/17/switching-from-carbonemacs-to-emacs-app/
           (setq ns-command-modifier 'meta)))))
-
-
-;; auto-complete
-;;
-;; http://cx4a.org/software/auto-complete/index.html
-;; C-s to filter
-;;
-;;(add-to-list 'load-path "~/.emacs.d/auto-complete")
-;;(when (try-require 'auto-complete-config)
-;;  (add-to-list 'ac-dictionary-directories "~/.emacs.d/autocomplete/ac-dict")
-;;  (if (> emacs-major-version 22)
-;;      (ac-config-default))
-;;      ;; if flyspeed stop working try: ac-flyspell-workaround
-;;  )
-;;
-;; Get (wrong-number-of-arguments called-interactively-p 1)
-;; on MacOS Emacs. Use the following workaround from
-;; http://paste.lisp.org/display/115598
-;; If we have a version of called-interactively-p that doesn't accept
-;; arguments, redefine it so that it does take arguments. This
-;; retains compatibility with packages that pass arguments to
-;; called-interactively-p.
-(condition-case nil (called-interactively-p 'interactive)
-  (error
-   ; Save reference to called-interactively-p in
-   ; inglorion-system-called-interactively-p
-   (fset 'inglorion-system-called-interactively-p
-         (symbol-function 'called-interactively-p))
-   ; Define called-interactively-p so that it discards
-   ; its arguments and calls inglorion-system-called-interactively-p
-   (fset 'called-interactively-p
-         (lambda (&rest args)
-           (inglorion-system-called-interactively-p)))))
- 
-(add-to-list 'load-path "~/.emacs.d/auto-complete")
-(when (try-require 'auto-complete-config)
-      (global-auto-complete-mode t)
-      (add-to-list 'ac-dictionary-directories "~/.emacs.d/autocomplete/ac-dict")
-      (ac-config-default)
-
-      (setq ac-auto-start nil)
-      (global-set-key "\M-/" 'auto-complete)
-)
-
-
-
-
-
-;; OLD STUFF
-;; ------------------------------------------------------------------------
-
-
-;; CUA  http://www.cua.dk/cua.el
-;;
-;; deactivated because not often used, and only for rectange support
-;;
-;; Theoretically allows you to use `C-v', `C-c', and `C-x' to paste,
-;; copy, and cut the region. But most importantly has supercool
-;; rectangle support
-;;
-;; best activated after all custom key-bindings
-;;
-;; part of emacs since 22.1.1
-;;(if (> emacs-major-version 21)
-;;    (progn
-;;      (cua-mode t)
-;;      (setq cua-enable-cua-keys nil)
-;;      ;;(transient-mark-mode 1) ;; No region when it is not highlighted
-;;      (global-unset-key "\C-v"); normally bound to cua-scroll-up
-;;      )
-;;      ;; try external lib (try-require 'cua)
-;; )
-
-
-;; ---  HideShow
-;;
-;(when (try-require 'hideshow)
-;      setq hs-isearch-open 't)
-;; activate with hs-minor-mode
-;; M-x hs-...
-;; C-c @ C-c toggle hide/show
-;; C-c @ C-s show block
-;; C-c @ C-h hide block
-;; C-c @ ESC C-s show all
-;; C-c @ ESC C-h hide all
-
-
-
-;; http://www.emacswiki.org/cgi-bin/wiki/LanguageEnvironment
-;; use native language env
-;;
-;;(set-terminal-coding-system 'iso-latin-1)
-;;(set-language-environment "Latin-1")
-;;(set-language-environment 'UTF-8)
-
-
-
-;; ansi-term
-;;
-;; can just use shell
-;; 
-;; http://user.it.uu.se/~mic/shell-toggle.el
-;; and modified by me
-;;
-;(autoload 'ansi-term-toggle
-;  "ansi-term-toggle"
-;  "Toggles between the *ansishell* buffer and whatever buffer you are editing."
-;  t)
-;(autoload 'ansi-term-toggle-cd
-;  "ansi-term-toggle-cd"
-;  "Pops up a shell-buffer and insert a \"cd <file-dir>\" command."
-;  t)
-;;
-;(when (try-require 'multi-term)
-;    (progn
-;      (setq multi-term-program "/bin/bash")))
-
-
-
-; Scratch
-;
-; enable auto-save for scratch
-;(with-current-buffer (get-buffer "*scratch*")
-;      (auto-save-mode t))
-
-
-;; ASCII-table
-;;
-;; Taken from http://puggy.symonds.net/~anoop/configs/dotemacs.html
-;; Print the ASCII table.
-;; Unnecessary. Just type man ascii
-;(message "Defining ascii-table")
-;(defun ascii-table ()
-;  "Print the ascii table."
-;  (interactive)
-;  (switch-to-buffer "*ASCII*")
-;  (erase-buffer)
-;  (insert (format "ASCII characters up to number %d.\n" 254))
-;  (insert (format "Dec Hex Char\n"))
-;  (let ((i 0))
-;    (while (< i 254)
-;      (setq i (+ i 1))
-;      (insert (format "%4d %c %x\n" i i i))))
-;  (beginning-of-buffer))
-
-;; multiple cursors
-;; https://github.com/magnars/multiple-cursors.el
-;;
-;; The basics:
-;;
-;; When you have an active region that spans multiple lines, the
-;; following will add a cursor to each line:
-;; mc/edit-lines
-;;
-;; When you want to add multiple cursors not based on continuous
-;; lines, but based on keywords in the buffer, use:
-;; mc/mark-next-like-this)
-;; mc/mark-previous-like-this)
-;; mc/mark-all-like-this)
-;; When you have an active region that spans multiple lines, the
-;; preceeding three commands will add one cursor to each line.
-;;
-;; set-rectangular-region-anchor
-;; Think of this one as set-mark except you're marking a rectangular region.
-;;
-;(add-to-list 'load-path "~/.emacs.d/multiple-cursors.el/")
-;(try-require 'multiple-cursors)
-
-
