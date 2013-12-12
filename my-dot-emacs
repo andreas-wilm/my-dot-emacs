@@ -9,7 +9,7 @@
 ;; ########################################################################
 ;;
 ;;
-;; Custom keybindings:
+;; Custom keybindings
 ;; ==================
 ;;
 ;;   comment-region           C-c C-q
@@ -17,8 +17,8 @@
 ;;   decrease-font-size       C-x C--
 ;;   next-/previous-buffer    M left/right
 ;;
-;; Other keybindings
-;; =================
+;; Memo for other keybindings
+;; ==========================
 ;;
 ;;   undo all unsaved changes       M-x revert-buffer
 ;;   mark-whole-buffer              C-x h
@@ -36,8 +36,6 @@
 ;;   find-tag                       M-.
 ;;   see also complete-tag: find . -type f -iname "*.[ch]" | xargs etags
 ;;   complete-symbol                M-TAB (Esc-TAB)
-;;   upcase-word                    M-u
-;;   downcase-word                  M-l
 ;;
 ;;   indent the region one space    C-x C-i
 ;;   see also indent-region         C-M
@@ -89,12 +87,11 @@
 ;;   shell
 ;;   highlight-changes
 ;;   goto-last-change
-;;   compile
 ;;   ngrep
 ;;   gdb-many-windows
 ;;   pop-to-mark-command (instead of using registers)
 ;;   also C-u C-space or C-u C-@
-
+;;
 ;;   occur: hide all lines matching regexp
 ;;          editable version missing (thought that was called all)
 ;;
@@ -124,18 +121,15 @@
 
 ;; Startup
 ;;
-;; Enter the debugger each time an error is found
-;;
 (setq debug-on-error t)
 (setq inhibit-startup-message t)
 (if window-system
     (server-start))
-(add-to-list 'load-path "~/.emacs.d/")
 
 
-
-;; paths
+;; Paths
 ;;
+(add-to-list 'load-path "~/.emacs.d/")
 (setq exec-path (append exec-path '("~/local/bin")))
 (setenv "PATH" (concat (getenv "PATH") ":~/local/bin"))
 
@@ -145,13 +139,14 @@
 ;; del genuinley deletes region, ie it's not put on the kill ring
 (delete-selection-mode t)
 
-; PC compatibility: Delete and its variants delete forward instead of
-; backward, C-Backspace kills backward a word (as C-Delete normally
-; would), M-Backspace does undo, Home and End move to beginning and
-; end of line, C-Home and C-End move to beginning and end of buffer
-; and C-Escape does list-buffers.
-; Stopped working for me using emacs 24.2 on Mac
-; (pc-bindings-mode)
+;; PC compatibility: Delete and its variants delete forward instead of
+;; backward, C-Backspace kills backward a word (as C-Delete normally
+;; would), M-Backspace does undo, Home and End move to beginning and
+;; end of line, C-Home and C-End move to beginning and end of buffer
+;; and C-Escape does list-buffers.
+;;
+;; Stopped working for me using emacs 24.2 on Mac
+;; (pc-bindings-mode)
 
 
 
@@ -1014,9 +1009,15 @@ of an error, just add the package to a list of missing packages."
 
 
 
-;; CUA
+
+
+;; OLD STUFF
+;; ------------------------------------------------------------------------
+
+
+;; CUA  http://www.cua.dk/cua.el
 ;;
-;; http://www.cua.dk/cua.el
+;; deactivated because not often used, and only for rectange support
 ;;
 ;; Theoretically allows you to use `C-v', `C-c', and `C-x' to paste,
 ;; copy, and cut the region. But most importantly has supercool
@@ -1025,19 +1026,15 @@ of an error, just add the package to a list of missing packages."
 ;; best activated after all custom key-bindings
 ;;
 ;; part of emacs since 22.1.1
-(if (> emacs-major-version 21)
-    (progn
-      (cua-mode t)
-      (setq cua-enable-cua-keys nil)
-      ;;(transient-mark-mode 1) ;; No region when it is not highlighted
-      (global-unset-key "\C-v"); normally bound to cua-scroll-up
-      )
-      ;; try external lib (try-require 'cua)
-  )
-
-
-;; OLD STUFF
-;; ------------------------------------------------------------------------
+;;(if (> emacs-major-version 21)
+;;    (progn
+;;      (cua-mode t)
+;;      (setq cua-enable-cua-keys nil)
+;;      ;;(transient-mark-mode 1) ;; No region when it is not highlighted
+;;      (global-unset-key "\C-v"); normally bound to cua-scroll-up
+;;      )
+;;      ;; try external lib (try-require 'cua)
+;; )
 
 
 ;; ---  HideShow
