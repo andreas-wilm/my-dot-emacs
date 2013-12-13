@@ -383,9 +383,17 @@ of an error, just add the package to a list of missing packages."
   :bind ("\C-c\C-d" . hungry-delete-forward))
 
 
-;; restructured text
+;; markdown
 ;;
-(use-package rst)
+;; http://jblevins.org/projects/markdown-mode/
+(use-package markdown-mode
+    :defer t
+    :init
+    (progn
+      (add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
+      (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+      (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))))
+
 
 ;; hide-region
 (use-package hide-region)
@@ -628,7 +636,7 @@ of an error, just add the package to a list of missing packages."
             ;;(setq tab-width 2)
             (local-set-key [return] 'newline-and-indent)
             (setq show-trailing-whitespace t)
-            (flyspell-mode t)
+            ;;(flyspell-mode t)
             ))
 (add-to-list 'auto-mode-alist '("\\.wml$" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.xhtml$" . html-mode))
