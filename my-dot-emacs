@@ -451,10 +451,15 @@ of an error, just add the package to a list of missing packages."
 
 
 
-;; restructured text
+;; markdown
 ;;
-(try-require 'rst)
-
+;; http://jblevins.org/projects/markdown-mode/
+(when (try-require 'markdown-mode)
+  (progn
+    (add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))))
+ 
 
 ;; edit all lines matching regexp
 ;;
@@ -750,7 +755,7 @@ of an error, just add the package to a list of missing packages."
             ;;(setq tab-width 2)
             (local-set-key [return] 'newline-and-indent)
             (setq show-trailing-whitespace t)
-            (flyspell-mode t)
+            ;;(flyspell-mode t)
             ))
 
 (add-to-list 'auto-mode-alist '("\\.wml$" . html-mode))
