@@ -1,9 +1,7 @@
 My dot.emacs. 
 
-Previously posted on my website and found useful by others. Therefore
-made public here, but mainly used by myself for syncing accross
-machines. Setup biased towards GUI-usage on Mac (emacs-app) and
-CLI-only usage on Linux.
+Setup biased towards GUI-usage on Mac (emacs-app) and CLI-only usage on Linux.
 
-Files in my_yasnippets have to be linked to in yasnippet dir.
 
+ln -s $(pwd)/dot.emacs ~/.emacs
+ln -s $(pwd)/dot.emacs.python.el ~/.emacs.python.el

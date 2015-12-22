@@ -854,9 +854,10 @@ of an error, just add the package to a list of missing packages."
 
 ;; http://www.emacswiki.org/cgi-bin/wiki/EmacsNiftyTricks#toc3
 ;; Found via https://github.com/ki/my-dot-emacs/blob/master/dot-emacs.txt
- (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-        "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-        (flet ((process-list ())) ad-do-it))
+;; Get "Warning: `(process-list nil)' is a malformed function" and unquittable emacs with version 23.1.1
+;;(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+;;       "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+;;        (flet ((process-list ())) ad-do-it))
 
 
 ;; Occur and Isearch
