@@ -8,6 +8,8 @@
 (setq debug-on-error t)
 (setq inhibit-startup-message t)
 (setq initial-scratch-message "")
+;; non-elpa libraries should go here
+(add-to-list 'load-path "~/.emacs.d/")
 
 
 ;; ELPA
@@ -30,6 +32,11 @@
 
 ;; markdown
 (add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))
+
+
+;; http://www.emacswiki.org/emacs/insert-time-string.el
+(require 'insert-time-string)
+(setq insert-time-string-default-format "iso-8601")
 
 
 ;; default tab behaviour
@@ -98,6 +105,12 @@
   (recentf-mode t))
 
 
+;; uniquify
+;; show path info in buffers with otherwise identical filenames
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward)
+
+
 ;; window-system specifics
 (if window-system
     (progn
@@ -119,8 +132,7 @@
       ;; https://github.com/juba/color-theme-tangotango via MELPA
       (load-theme 'tangotango t)
    ))
-    
-    
+
 
 ;; MacOSX specifics
 ;;
@@ -147,3 +159,6 @@
           ;; the following replaces the two lines above
           ;; see also http://lojic.com/blog/2010/03/17/switching-from-carbonemacs-to-emacs-app/
           (setq ns-command-modifier 'meta)))))
+;; https://github.com/purcell/exec-path-from-shell
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
