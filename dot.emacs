@@ -15,8 +15,8 @@
 ;; ELPA
 ;; http://emacswiki.org/emacs/ELPA
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("marmalade" . "https://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.org/packages/")))
+                         ("marmalade" . "https://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 
 
@@ -116,22 +116,37 @@
     (progn
       (message "Setting window-system specific stuff")
       (server-start)
-
+      
       (global-unset-key "\C-z"); iconify-or-deiconify-frame (C-x C-z)
-
+      
       ;; del genuinley deletes region, ie it's not put on the kill ring
       (delete-selection-mode t)
-
+      
       (tool-bar-mode -1)
-
+      
       (message "Setting up font")
       (condition-case nil
           (set-face-attribute 'default nil :font "Inconsolata-13:weight=normal")
-          (error (message "Couldn't load Inconsolata")))
-
+        (error (message "Couldn't load Inconsolata")))
+      
       ;; https://github.com/juba/color-theme-tangotango via MELPA
       (load-theme 'tangotango t)
-   ))
+      ))
+
+
+;; org-mode
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (message "Setting up my org-mode hooks")
+            ;; http://stackoverflow.com/questions/11384516/how-to-make-all-org-files-under-a-folder-added-in-agenda-list-automatically
+            (setq org-agenda-files '("~/Dropbox/gis/org"))
+            ;; http://stackoverflow.com/questions/10642888/syntax-highlighting-within-begin-src-block-in-emacs-orgmode-not-working
+            (setq org-src-fontify-natively t)
+            (setq org-agenda-span 14)
+            ;; capture time stamps and/or notes when TODO state changes, in particular when a task is DONE
+            (setq org-log-done 'time)
+            ))
 
 
 ;; MacOSX specifics
@@ -140,25 +155,25 @@
 ;;
 ;; OS X Window System
 (if (string-equal system-type "darwin")
-  (progn
-    (message "Customising for Darwin")
-    ; delete char on external keyboard (kp) is bound to
-    ; backward-delete-char-untabify instead of delete-char on Mac Os X.
-    (global-set-key [kp-delete] 'delete-char)
-    ; Needed on MacOS x for mc-gpg to find gpg
-    ; FIXME Why is this not set by environment?
-    ; delete next line and you get: *ERROR*: gpg could not be found
-    (setenv "PATH" (concat (getenv "PATH") ":/opt/local/bin"))
-    ; delete next line and you get: *ERROR*: Searching for program: No such file or directory, gpg
-    (setq exec-path (append exec-path '("/opt/local/bin")))
-    (if (eq window-system 'ns); Not 'mac!
-        (progn
-          (message "Customising for OS X window-system")
-          ;;(setq mac-command-modifier 'meta)
-          ;;(setq mac-option-modifier 'hyper)
-          ;; the following replaces the two lines above
-          ;; see also http://lojic.com/blog/2010/03/17/switching-from-carbonemacs-to-emacs-app/
-          (setq ns-command-modifier 'meta)))))
+    (progn
+      (message "Customising for Darwin")
+      ; delete char on external keyboard (kp) is bound to
+      ; backward-delete-char-untabify instead of delete-char on Mac Os X.
+      (global-set-key [kp-delete] 'delete-char)
+      ; Needed on MacOS x for mc-gpg to find gpg
+      ; FIXME Why is this not set by environment?
+      ; delete next line and you get: *ERROR*: gpg could not be found
+      (setenv "PATH" (concat (getenv "PATH") ":/opt/local/bin"))
+      ; delete next line and you get: *ERROR*: Searching for program: No such file or directory, gpg
+      (setq exec-path (append exec-path '("/opt/local/bin")))
+      (if (eq window-system 'ns); Not 'mac!
+          (progn
+            (message "Customising for OS X window-system")
+            ;;(setq mac-command-modifier 'meta)
+            ;;(setq mac-option-modifier 'hyper)
+            ;; the following replaces the two lines above
+            ;; see also http://lojic.com/blog/2010/03/17/switching-from-carbonemacs-to-emacs-app/
+            (setq ns-command-modifier 'meta)))))
 ;; https://github.com/purcell/exec-path-from-shell
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
