@@ -9,7 +9,7 @@
 (setq inhibit-startup-message t)
 (setq initial-scratch-message "")
 ;; non-elpa libraries should go here
-(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 
 
 ;; ELPA
