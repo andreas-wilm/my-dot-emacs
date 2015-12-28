@@ -136,8 +136,7 @@
         (error (message "Couldn't load Inconsolata")))
       
       ;; https://github.com/juba/color-theme-tangotango via MELPA
-      (load-theme 'tangotango t)
-      ))
+      (load-theme 'tangotango t)))
 
 
 ;; org-mode
