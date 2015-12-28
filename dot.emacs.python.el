@@ -1,3 +1,21 @@
+(require 'python)
+;; ipython setup
+;; ipython completion needs following tweaks to work
+;; see http://stackoverflow.com/questions/13422653/ipython-support-on-emacs-24-x
+;; and http://stackoverflow.com/questions/21880950/what-combination-of-python-mode-ipython-ipython-el-versions-releases-and-ini
+(setq
+  python-shell-interpreter "ipython"
+  python-shell-interpreter-args ""
+  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+  python-shell-completion-setup-code
+    "from IPython.core.completerlib import module_completion"
+  python-shell-completion-module-string-code
+    "';'.join(module_completion('''%s'''))\n"
+  python-shell-completion-string-code
+    "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
+
 ;; flymake with pylint
 ;; http://docs.pylint.org/ide-integration
 ;; see also
