@@ -11,7 +11,6 @@
 ;; non-elpa libraries should go here
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
-
 ;; ELPA
 ;; http://emacswiki.org/emacs/ELPA
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -19,6 +18,13 @@
                          ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 
+;; make OS X Emacs GUI use the $PATH set up by the user's shell 
+;; https://github.com/purcell/exec-path-from-shell
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+
+; Turn beep off
+(setq visible-bell nil)
 
 ;; http://www.emacswiki.org/emacs/ShowParenMode
 (show-paren-mode t)
@@ -27,8 +33,8 @@
 ;; http://emacswiki.org/emacs/InteractivelyDoThings
 (require 'ido)
 (ido-mode t)
-;;?  (setq ido-enable-flex-matching t); fuzzy matching
-;;?  (setq ido-everywhere t)
+(setq ido-enable-flex-matching t); fuzzy matching
+(setq ido-everywhere t)
 
 ;; markdown
 (add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))
@@ -160,8 +166,8 @@
       ; delete char on external keyboard (kp) is bound to
       ; backward-delete-char-untabify instead of delete-char on Mac Os X.
       (global-set-key [kp-delete] 'delete-char)
-      ; Needed on MacOS x for mc-gpg to find gpg
-      ; FIXME Why is this not set by environment?
+      ; Needed on MacOS x for mc-gpg to find gpg 
+      ; FIXME might now be set by exec-path... below
       ; delete next line and you get: *ERROR*: gpg could not be found
       (setenv "PATH" (concat (getenv "PATH") ":/opt/local/bin"))
       ; delete next line and you get: *ERROR*: Searching for program: No such file or directory, gpg
@@ -174,6 +180,3 @@
             ;; the following replaces the two lines above
             ;; see also http://lojic.com/blog/2010/03/17/switching-from-carbonemacs-to-emacs-app/
             (setq ns-command-modifier 'meta)))))
-;; https://github.com/purcell/exec-path-from-shell
-(when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize))
