@@ -1,3 +1,0 @@
-#name : isodate template
-# --
-`(format-time-string "%Y-%m-%d" (current-time))`

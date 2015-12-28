@@ -166,17 +166,8 @@
       ; delete char on external keyboard (kp) is bound to
       ; backward-delete-char-untabify instead of delete-char on Mac Os X.
       (global-set-key [kp-delete] 'delete-char)
-      ; Needed on MacOS x for mc-gpg to find gpg 
-      ; FIXME might now be set by exec-path... below
-      ; delete next line and you get: *ERROR*: gpg could not be found
-      (setenv "PATH" (concat (getenv "PATH") ":/opt/local/bin"))
-      ; delete next line and you get: *ERROR*: Searching for program: No such file or directory, gpg
-      (setq exec-path (append exec-path '("/opt/local/bin")))
       (if (eq window-system 'ns); Not 'mac!
           (progn
             (message "Customising for OS X window-system")
-            ;;(setq mac-command-modifier 'meta)
-            ;;(setq mac-option-modifier 'hyper)
-            ;; the following replaces the two lines above
             ;; see also http://lojic.com/blog/2010/03/17/switching-from-carbonemacs-to-emacs-app/
             (setq ns-command-modifier 'meta)))))

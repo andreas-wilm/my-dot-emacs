@@ -1,9 +1,0 @@
-#name : open file for reading and process line by line     
-# --
-handle = open($0, 'r')
-for line in handle:
-    #line = line.rstrip()
-    #if len(line)==0 or line.startswith('#'):
-    #    continue
-    pass
-handle.close()
