@@ -18,6 +18,7 @@
                          ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 
+
 ;; make OS X Emacs GUI use the $PATH set up by the user's shell 
 ;; https://github.com/purcell/exec-path-from-shell
 (when (memq window-system '(mac ns))
@@ -145,7 +146,12 @@
           (lambda ()
             (message "Setting up my org-mode hooks")
             ;; http://stackoverflow.com/questions/11384516/how-to-make-all-org-files-under-a-folder-added-in-agenda-list-automatically
-            (setq org-agenda-files '("~/Dropbox/gis/org"))
+            ;; (setq org-agenda-files '("~/Dropbox/gis/org"))
+            ;; http://orgmode.org/worg/org-faq.html#set-agenda-files-recursively
+            (setq org-agenda-files
+                  (mapcar 'abbreviate-file-name
+                          (split-string
+                           (shell-command-to-string "find ~/Dropbox/gis/org -name \"*.org\"") "\n")))            
             ;; http://stackoverflow.com/questions/10642888/syntax-highlighting-within-begin-src-block-in-emacs-orgmode-not-working
             (setq org-src-fontify-natively t)
             (setq org-agenda-span 14)
