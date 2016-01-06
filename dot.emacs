@@ -88,11 +88,15 @@
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
 (ac-config-default)
 (ac-flyspell-workaround)
+;; start completion automatically after X characters
+(setq ac-auto-start 4)
 ;; If you are being annoyed with displaying completion menu, you can disable
 ;; automatic starting completion by setting ac-auto-start to nil.
 ;; (setq ac-auto-start nil)
 ;; Enable auto-complete-mode automatically for specific modes
 ;; (add-to-list 'ac-modes 'brandnew-mode)
+;; delay showing completion menu by setting ac-auto-show-menu to seconds in real number.
+(setq ac-auto-show-menu 0.8)
 
 
 ;; http://www.emacswiki.org/emacs/MidnightMode
