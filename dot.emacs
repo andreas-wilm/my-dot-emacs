@@ -93,15 +93,13 @@
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
 (ac-config-default)
 (ac-flyspell-workaround)
-;; start completion automatically after X characters
-(setq ac-auto-start 4)
 ;; If you are being annoyed with displaying completion menu, you can disable
 ;; automatic starting completion by setting ac-auto-start to nil.
-;; (setq ac-auto-start nil)
-;; Enable auto-complete-mode automatically for specific modes
-;; (add-to-list 'ac-modes 'brandnew-mode)
+(setq ac-auto-start nil)
 ;; delay showing completion menu by setting ac-auto-show-menu to seconds in real number.
-(setq ac-auto-show-menu 0.8)
+;; (setq ac-auto-show-menu 0.8)
+;; start completion automatically after X characters
+;; (setq ac-auto-start 4)
 
 
 ;; http://www.emacswiki.org/emacs/MidnightMode
@@ -185,3 +183,4 @@
             (message "Customising for OS X window-system")
             ;; see also http://lojic.com/blog/2010/03/17/switching-from-carbonemacs-to-emacs-app/
             (setq ns-command-modifier 'meta)))))
+
