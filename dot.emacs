@@ -41,6 +41,11 @@
 (add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))
 
 
+;; yaml
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+
+
 ;; http://www.emacswiki.org/emacs/insert-time-string.el
 (require 'insert-time-string)
 (setq insert-time-string-default-format "iso-8601")
