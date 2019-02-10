@@ -40,11 +40,16 @@
 ;; markdown
 (add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))
 
+;; groovy for nextflow
+(add-to-list 'auto-mode-alist '("\\.nf" . groovy-mode))
 
 ;; yaml
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 
+;; https://github.com/spotify/dockerfile-mode
+(require 'dockerfile-mode)
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
 
 ;; http://www.emacswiki.org/emacs/insert-time-string.el
 (require 'insert-time-string)
@@ -86,6 +91,9 @@
 ;; http://www.emacswiki.org/cgi-bin/wiki/SmoothScrolling
 (setq scroll-step 1
       scroll-conservatively 10000)
+
+;; if using aspell instead of ispell
+(setq ispell-list-command "--list")
 
 
 ;; http://auto-complete.org/
@@ -166,6 +174,8 @@
             (setq org-log-done 'time)
             ))
 
+;; http://emacs.stackexchange.com/questions/27841/unable-to-decrypt-gpg-file-using-emacs-but-command-line-gpg-works
+(setf epa-pinentry-mode 'loopback)
 
 ;; MacOSX specifics
 ;;
@@ -183,4 +193,20 @@
             (message "Customising for OS X window-system")
             ;; see also http://lojic.com/blog/2010/03/17/switching-from-carbonemacs-to-emacs-app/
             (setq ns-command-modifier 'meta)))))
-
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   (quote
+    ("~/Dropbox/gis/org/cloud.org" "~/Dropbox/gis/org/germs.org" "~/Dropbox/gis/org/hi-c-rna.org" "~/Dropbox/gis/org/lofreq-indel.org" "~/Dropbox/gis/org/lofreq.org" "~/Dropbox/gis/org/master.org" "~/Dropbox/gis/org/meeting-minutes.org" "~/Dropbox/gis/org/nscc.org" "~/Dropbox/gis/org/org-mode-notes.org" "~/Dropbox/gis/org/pipeline-framework.org" "~/Dropbox/gis/org/pipelines.org" "~/Dropbox/gis/org/sg10k.org" "/Users/wilma/Dropbox/gis/org/cloud.org" "/Users/wilma/Dropbox/gis/org/germs.org" "/Users/wilma/Dropbox/gis/org/hi-c-rna.org" "/Users/wilma/Dropbox/gis/org/lofreq-indel.org" "/Users/wilma/Dropbox/gis/org/lofreq.org" "/Users/wilma/Dropbox/gis/org/master.org" "/Users/wilma/Dropbox/gis/org/meeting-minutes.org" "/Users/wilma/Dropbox/gis/org/nscc.org" "/Users/wilma/Dropbox/gis/org/org-mode-notes.org" "/Users/wilma/Dropbox/gis/org/pipeline-framework.org" "/Users/wilma/Dropbox/gis/org/pipelines.org" "/Users/wilma/Dropbox/gis/org/sg10k.org")))
+ '(package-selected-packages
+   (quote
+    (nim-mode go-mode markdown-preview-mode snakemake-mode groovy-mode markdown-mode yaml-mode tangotango-theme hungry-delete exec-path-from-shell auto-complete))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
